@@ -1,0 +1,43 @@
+# Node.js (for both frontend and backend)
+node_modules/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Dependency directories
+/frontend/node_modules/
+/backend/node_modules/
+
+# Build directories
+/frontend/dist/
+/frontend/build/
+/backend/dist/
+/backend/build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# MacOS
+.DS_Store
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# NPM package-lock files (optional, you might want to keep it)
+# package-lock.json
+# /frontend/package-lock.json
+# /backend/package-lock.json
+
+# OS-specific files
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.swp
+*.swo
+*.swn
