@@ -28,13 +28,8 @@ function ProductManagement() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Confirm before submitting
     const confirmSubmit = window.confirm('Are you sure you want to add this product?');
     if (!confirmSubmit) return;
-
-    // Debugging - check form data before submission
-    console.log('Form Data:', formData);
 
     const formDataToSend = new FormData();
     Object.keys(formData).forEach(key => {
@@ -48,7 +43,7 @@ function ProductManagement() {
         }
       });
 
-      console.log('Product added:', response.data); // Debugging - log the response
+      console.log('Product added:', response.data);
       fetchProducts();
       setFormData({
         name: '',
@@ -59,7 +54,6 @@ function ProductManagement() {
         image: null
       });
 
-      // Alert after successful submission
       alert('Product added successfully!');
     } catch (error) {
       console.error('Error adding product:', error);
@@ -80,90 +74,79 @@ function ProductManagement() {
         <h1 className="text-2xl font-bold mb-6">Product Management</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="card p-6">
+          <div className="card p-6 shadow-lg rounded-lg bg-white">
             <h2 className="text-xl font-semibold mb-4">Add New Product</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Name</label>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Name</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="input-field"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Price</label>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Price</label>
                 <input
                   type="number"
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
-                  className="input-field"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Category</label>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Category</label>
                 <select
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="input-field"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
                   <option value="">Select Category</option>
-                  <option value="marvel">Marvel</option>
                   <option value="exclusive">Exclusive</option>
                   <option value="limited">Limited Edition</option>
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Description</label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  className="input-field"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows="3"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Exclusive</label>
-                <input
-                  type="checkbox"
-                  name="isExclusive"
-                  checked={formData.isExclusive}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Image</label>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Image</label>
                 <input
                   type="file"
                   name="image"
                   onChange={handleChange}
-                  className="input-field"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary mt-4 border transition transform active:scale-95">Add Product</button>
+              <button type="submit" className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Add Product</button>
             </form>
           </div>
 
-          {/* product list */}
-          <div className="card p-6">
+          {/* Product List */}
+          <div className="card p-6 shadow-lg rounded-lg bg-white">
             <h2 className="text-xl font-semibold mb-4">Product List</h2>
             <ul>
               {products.map(product => (
-                <li key={product._id} className="mb-4">
+                <li key={product._id} className="mb-4 p-4 border-b border-gray-300">
                   <h3 className="font-semibold">{product.name}</h3>
                   <p>{product.description}</p>
                   {product.image && <img src={`http://localhost:3000${product.image}`} alt={product.name} className="mt-2 w-32" />}
