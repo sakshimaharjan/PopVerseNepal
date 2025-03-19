@@ -1,13 +1,31 @@
 import AdminLayout from '../../components/AdminLayout';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Dashboard() {
-  const [stats] = useState({
-    totalProducts: 150,
-    totalOrders: 1234,
-    revenue: 45678,
-    activeUsers: 890
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalOrders: 0,
+    revenue: 0,
+    activeUsers: 0
   });
+
+  useEffect(() => {
+    // Fetch total products from the API
+    const fetchTotalProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/products'); 
+        const products = await response.json();
+        setStats((prevStats) => ({
+          ...prevStats,
+          totalProducts: products.length, // Update totalProducts with the fetched value
+        }));
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchTotalProducts();
+  }, []); // Empty dependency array means this effect runs once when the component mounts
 
   return (
     <AdminLayout>

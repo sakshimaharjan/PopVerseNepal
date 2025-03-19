@@ -111,8 +111,8 @@ function Products() {
             <Link to={`/product/${product._id}`} key={product._id} className="group">
               <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:-translate-y-1">
                 <img
-                  src={`http://localhost:3000${product.image}`} // Display product image
-                  alt={product.name} // Product name for alt text
+                  src={`http://localhost:3000${product.image}`}
+                  alt={product.name}
                   className="w-full h-auto max-h-[180px] object-contain bg-gray-100 p-4"
                 />
                 <div className="p-4">

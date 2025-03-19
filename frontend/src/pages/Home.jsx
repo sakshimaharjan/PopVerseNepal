@@ -35,26 +35,28 @@ function Home() {
       <Hero />
 
       {/* Limited Time Offers */}
-      <section className="py-16 bg-gray-700 relative">
+      <section className="py-16  relative">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-white">Limited Time Offers</h2>
+            <h2 className="text-3xl font-bold text-indigo-600">Limited Time Offers</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
             {limitedOffers.slice(0, showMoreLimited ? limitedOffers.length : 3).map((product) => (
               <Link to={`/product/${product._id}`} key={product._id} className="group">
                 <div className="card relative overflow-hidden group">
-                  <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm">
+                  <div className="absolute top-4 right-4 text-white px-3 py-1 rounded-full text-sm">
                     Limited Edition
                   </div>
-                  <div className="p-4 bg-gray-100 rounded-lg shadow-lg flex flex-col items-start">
+                  <div className="p-4 bg-white rounded-lg shadow-lg flex flex-col items-start h-[380px] transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                     <img
                       src={`http://localhost:3000${product.image}`}
                       alt={product.name}
-                      className="w-full h-auto max-h-[200px] object-contain mb-4"
+                      className="w-full h-auto max-h-[200px] object-contain bg-gray-100 mb-4 mt-10 p-6"
                     />
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">{product.name}</h3>
-                    <p className="text-xl font-bold text-primary mb-2 text-green-700">${product.price}</p>
+                     <div className="p-4">
+                      <h3 className="text-xl font-bold text-gray-800 mb-2 mt-4">{product.name}</h3>
+                      <p className="text-xl font-bold text-primary text-indigo-600">${product.price}</p>
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -66,7 +68,7 @@ function Home() {
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
               <button
                 onClick={() => setShowMoreLimited(!showMoreLimited)}
-                className="text-white bg-amber-700 px-6 py-3  rounded-lg shadow-lg transform transition-transform hover:scale-90 focus:outline-none hover:bg-primary-dark"
+                className="text-white bg-indigo-600 px-6 py-3  rounded-lg shadow-lg transform transition-transform hover:scale-90 focus:outline-none hover:bg-primary-dark"
               >
                 {showMoreLimited ? 'Hide' : 'Show More'}
               </button>
@@ -76,26 +78,23 @@ function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-16 bg-gray-700 relative">
+      <section className="py-16 relative">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-white">Featured Items</h2>
+            <h2 className="text-3xl font-bold text-indigo-600">Featured Items</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredProducts.slice(0, showMoreFeatured ? featuredProducts.length : 3).map((product) => (
               <Link to={`/product/${product._id}`} key={product._id} className="group">
                 <div className="card hover:shadow-xl transition-shadow"> 
-                  <div className="p-4 bg-gray-100 rounded-lg shadow-lg flex flex-col items-start">
+                <div className="p-4 bg-gray-200 rounded-lg shadow-lg flex flex-col items-start h-[370px] transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                     <img
                       src={`http://localhost:3000${product.image}`}
                       alt={product.name}
-                      className="w-full h-64 object-contain rounded-lg shadow-lg"
+                      className="w-full h-auto max-h-[200px] object-contain mb-4 mt-10"
                     />
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                      {product.name}
-                    </h3>
-                    <p className="text-gray-600 mb-2">{product.description}</p>
-                    <p className="text-xl font-bold text-primary">${product.price}</p>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2 mt-4">{product.name}</h3>
+                    <p className="text-xl font-bold text-primary mb-2 text-indigo-600">${product.price}</p>
                   </div>
                 </div>
               </Link>
@@ -107,7 +106,7 @@ function Home() {
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 mt-10">
               <button
                 onClick={() => setShowMoreFeatured(!showMoreFeatured)}
-                className="text-white bg-primary px-6 py-3 rounded-lg shadow-lg transform transition-transform hover:scale-110 focus:outline-none hover:bg-primary-dark"
+                className="text-white bg-indigo-600 px-6 py-3 rounded-lg shadow-lg transform transition-transform hover:scale-110 focus:outline-none hover:bg-primary-dark"
               >
                 {showMoreFeatured ? 'Hide' : 'Show More'}
               </button>
