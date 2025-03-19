@@ -149,7 +149,7 @@ function ProductManagement() {
                 <li key={product._id} className="mb-4 p-4 border-b border-gray-300">
                   <h3 className="font-semibold">{product.name}</h3>
                   <p>{product.description}</p>
-                  {product.image && <img src={`http://localhost:3000${product.image}`} alt={product.name} className="mt-2 w-32" />}
+                  {product.image && <img src={product.image} alt={product.name} className="mt-2 w-32" />}
                 </li>
               ))}
             </ul>

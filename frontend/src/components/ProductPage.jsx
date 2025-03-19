@@ -44,7 +44,7 @@ function ProductPage() {
         {/* Left: Product Image */}
         <div className="flex justify-center items-center border border-gray-200 rounded-lg overflow-hidden">
             <img
-                src={`http://localhost:3000${product.image}`}
+                src={product.image}
                 alt={product.name}
                 className="w-full h-auto max-h-[300px] object-contain transition"
             />

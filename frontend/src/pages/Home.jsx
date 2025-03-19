@@ -49,7 +49,7 @@ function Home() {
                   </div>
                   <div className="p-4 bg-white rounded-lg shadow-lg flex flex-col items-start h-[380px] transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                     <img
-                      src={`http://localhost:3000${product.image}`}
+                      src={product.image}
                       alt={product.name}
                       className="w-full h-auto max-h-[200px] object-contain bg-gray-100 mb-4 mt-10 p-6"
                     />
@@ -89,7 +89,7 @@ function Home() {
                 <div className="card hover:shadow-xl transition-shadow"> 
                 <div className="p-4 bg-gray-200 rounded-lg shadow-lg flex flex-col items-start h-[370px] transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                     <img
-                      src={`http://localhost:3000${product.image}`}
+                      src={product.image}
                       alt={product.name}
                       className="w-full h-auto max-h-[200px] object-contain mb-4 mt-10"
                     />
