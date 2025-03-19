@@ -1,5 +1,5 @@
 const express = require('express');
-const Product = require('../models/Product'); // Ensure you have this model
+const Product = require('../models/Product');
 const router = express.Router();
 const multer = require('multer');
 
@@ -30,6 +30,7 @@ router.post('/', upload.single('image'), async (req, res) => {
 
   try {
     const savedProduct = await newProduct.save();
+    console.log('Product added successfully:', savedProduct);
     res.status(201).json(savedProduct);
   } catch (error) {
     console.error('Error adding product:', error);
@@ -41,6 +42,7 @@ router.post('/', upload.single('image'), async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
+    console.log('Fetched products:', products.length, 'products found.');
     res.status(200).json(products);
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -53,14 +55,15 @@ router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
+      console.log(`Product with ID ${req.params.id} not found.`);
       return res.status(404).json({ error: 'Product not found' });
     }
+    console.log('Fetched product:', product);
     res.status(200).json(product);
   } catch (error) {
     console.error('Error fetching product:', error);
     res.status(500).json({ error: 'Error fetching product' });
   }
 });
-
 
 module.exports = router;
