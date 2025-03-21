@@ -7,6 +7,8 @@ import Contact from './pages/Contact';
 import Dashboard from './pages/admin/Dashboard';
 import ProductManagement from './pages/admin/ProductManagement';
 import ProductPage from './components/ProductPage';
+import Login from './pages/Login';
+import Signup from './pages/SignUp';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<Dashboard />} />
