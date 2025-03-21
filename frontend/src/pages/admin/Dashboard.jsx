@@ -1,5 +1,7 @@
 import AdminLayout from '../../components/AdminLayout';
 import { useState, useEffect } from 'react';
+import PolarChart from './PolarChart';
+import BarChart from './BarChart';
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -29,7 +31,7 @@ function Dashboard() {
 
   return (
     <AdminLayout>
-      <div className="p-6">
+      <div className="p-6 mt-20">
         <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -53,6 +55,15 @@ function Dashboard() {
             <div className="text-2xl font-bold">{stats.activeUsers}</div>
           </div>
         </div>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-gray-300 my-4 mx-6"></div>
+
+      {/* Polar and Bar charts next to each other */}
+      <div className="flex space-x-6 px-6">
+          <PolarChart />
+          <BarChart />
       </div>
     </AdminLayout>
   );

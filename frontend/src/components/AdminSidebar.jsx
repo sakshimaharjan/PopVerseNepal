@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 function AdminSidebar() {
 
   return (
-    <aside className="fixed left-0 mt-20 top-0 bottom-0 w-34 bg-gray-900 text-white p-4 transition-all duration-300 md:w-64 sm:w-16">
+    <aside className="fixed left-0 mt-25 top-0 bottom-0 w-34 bg-gray-900 text-white p-4 transition-all duration-300 md:w-64 sm:w-16">
       <Link to="/admin" className="flex items-center text-xs lg:text-xl font-bold mb-8 md:justify-start">
         <span className="md:hidden">📊Admin Panel</span>
         <span className="hidden md:block">Admin Panel</span>
