@@ -9,6 +9,7 @@ import ProductManagement from './pages/admin/ProductManagement';
 import ProductPage from './components/ProductPage';
 import Login from './pages/Login';
 import Signup from './pages/SignUp';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -29,6 +30,8 @@ function App() {
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/products" element={<ProductManagement />} />
         </Routes>
+        <Footer />
+
       </div>
     </Router>
   );
