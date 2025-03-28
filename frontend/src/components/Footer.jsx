@@ -6,17 +6,25 @@ const Footer = () => {
       <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Company Info */}
         <div>
-          <h2 className="text-lg font-bold">PopVerseNepal</h2>  {/*Need to add logo here */}
-          <p className="text-sm mt-2">Discover the perfect, stylish funko pops.</p>
-          <div className="flex space-x-4 mt-4">
-            <FaFacebook className="text-2xl cursor-pointer hover:text-gray-600" />
-            <FaTwitter className="text-2xl cursor-pointer hover:text-gray-600" />
-            <FaInstagram className="text-2xl cursor-pointer hover:text-gray-600" />
-            <FaTiktok className="text-2xl cursor-pointer hover:text-gray-600" />
-          </div>
-        </div>
+        <h2 className="text-lg font-bold">PopVerseNepal</h2> {/*Need to add logo here */}
+                <p className="text-sm mt-2">Discover the perfect, stylish funko pops.</p>
+                <div className="flex space-x-4 mt-4">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                  <FaFacebook className="text-2xl cursor-pointer hover:text-gray-600" />
+                </a>
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer">
+                  <FaTwitter className="text-2xl cursor-pointer hover:text-gray-600" />
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                  <FaInstagram className="text-2xl cursor-pointer hover:text-gray-600" />
+                </a>
+                <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer">
+                  <FaTiktok className="text-2xl cursor-pointer hover:text-gray-600" />
+                </a>
+                </div>
+              </div>
 
-        {/* Categories */}
+              {/* Categories */}
         <div>
           <h3 className="text-lg font-bold">CATEGORY</h3>
           <ul className="mt-2 space-y-1 text-sm">
