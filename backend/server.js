@@ -11,7 +11,7 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: 'http://localhost:5173',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
@@ -22,7 +22,10 @@ connectDB();
 
 // Routes
 const productRoutes = require('./routes/products.js');
+const authRoutes = require('./routes/auth');
+
 app.use('/api/products', productRoutes);
+app.use('/api/auth', authRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
