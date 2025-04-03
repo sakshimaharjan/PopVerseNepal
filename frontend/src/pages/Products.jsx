@@ -1,134 +1,344 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { IoIosArrowDropdownCircle } from 'react-icons/io';
+"use client"
+
+import { useState, useEffect } from "react"
+import axios from "axios"
+import { Link } from "react-router-dom"
+import { FiFilter, FiGrid, FiList, FiShoppingCart, FiEye } from "react-icons/fi"
+import { useCart } from "../components/CartContext"
 
 function Products() {
   // State for storing products fetched from the API
-  const [products, setProducts] = useState([]);
-  
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
   // State for tracking the selected category filter
-  const [category, setCategory] = useState('all');
+  const [category, setCategory] = useState("all")
 
   // State for tracking the selected sorting order (price)
-  const [sortOrder, setSortOrder] = useState('default');
+  const [sortOrder, setSortOrder] = useState("default")
+
+  // State for view mode (grid or list)
+  const [viewMode, setViewMode] = useState("grid")
+
+  // State for filter sidebar on mobile
+  const [showFilters, setShowFilters] = useState(false)
+
+  // Get cart functions
+  const { addToCart } = useCart()
 
   // Fetch products from the API when the component mounts
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true)
         // Request products from the backend API
-        const response = await axios.get('http://localhost:3000/api/products');
+        const response = await axios.get("http://localhost:3000/api/products")
         // Store the products in the state
-        setProducts(response.data);
+        setProducts(response.data)
+        setLoading(false)
       } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-
-    fetchProducts();
-  }, []); // Empty dependency array ensures this runs once after the component mounts
-
-  // Filter products based on the selected category
-  let filteredProducts = category === 'all'
-    ? products  // If "all" is selected, show all products
-    : products.filter((product) => product.category === category); // Filter by selected category
-
-  // Quick Sort Algorithm to sort products based on price
-  const quickSort = (arr, order) => {
-    if (arr.length <= 1) return arr; // Base case for recursion: if the array has 1 or no elements, it's already sorted
-
-    const pivot = arr[arr.length - 1]; // Choose the last element as the pivot
-    const left = []; // Array to store elements less than pivot
-    const right = []; // Array to store elements greater than pivot
-
-    // Partition the array into two halves
-    for (let i = 0; i < arr.length - 1; i++) {
-      if (order === 'lowToHigh') {
-        if (arr[i].price < pivot.price) left.push(arr[i]); // If current price is less than pivot price, add to left
-        else right.push(arr[i]); // Otherwise, add to right
-      } else if (order === 'highToLow') {
-        if (arr[i].price > pivot.price) left.push(arr[i]); // If current price is greater than pivot price, add to left
-        else right.push(arr[i]); // Otherwise, add to right
+        console.error("Error fetching products:", error)
+        setError("Failed to load products. Please try again later.")
+        setLoading(false)
       }
     }
 
-    // Recursively apply quickSort to the left and right arrays, then concatenate them with the pivot in the middle
-    return [...quickSort(left, order), pivot, ...quickSort(right, order)];
-  };
+    fetchProducts()
+  }, []) // Empty dependency array ensures this runs once after the component mounts
+
+  // Filter products based on the selected category
+  let filteredProducts =
+    category === "all"
+      ? products // If "all" is selected, show all products
+      : products.filter((product) => product.category === category) // Filter by selected category
 
   // Sort the filtered products based on the selected sorting order
-  let sortedProducts = filteredProducts;
+  if (sortOrder === "lowToHigh") {
+    filteredProducts = [...filteredProducts].sort((a, b) => a.price - b.price)
+  } else if (sortOrder === "highToLow") {
+    filteredProducts = [...filteredProducts].sort((a, b) => b.price - a.price)
+  }
 
-  if (sortOrder === 'lowToHigh' || sortOrder === 'highToLow') {
-    sortedProducts = quickSort(filteredProducts, sortOrder); // Apply quickSort
+  // Handle add to cart
+  const handleAddToCart = (e, product) => {
+    e.preventDefault()
+    e.stopPropagation()
+    addToCart(product, 1)
+
+    // Show toast notification
+    const toast = document.getElementById("toast")
+    if (toast) {
+      toast.classList.remove("hidden")
+      setTimeout(() => {
+        toast.classList.add("hidden")
+      }, 3000)
+    }
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-8 mt-20">
-      <h1 className="text-5xl font-extrabold text-center mb-8 text-gray-900">Our Collection</h1>
-      
-      {/* Filters and Sorting */}
-      <div className="flex flex-wrap justify-between items-center mb-8">
-        <div className="flex gap-4">
-          {/* Buttons to filter by category */}
-          {['all', 'marvel', 'exclusive'].map((cat) => (
-            <button
-              key={cat}
-              className={`px-4 py-2 border rounded-md transition-all ${
-                category === cat ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white border-gray-300 hover:bg-gray-100'
-              }`}
-              onClick={() => setCategory(cat)} // Set the category when a button is clicked
-            >
-              {cat.charAt(0).toUpperCase() + cat.slice(1)} {/* Capitalize the category name */}
-            </button>
-          ))}
+    <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Page Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">Our Collection</h1>
+          <p className="mt-4 text-xl text-gray-500 max-w-3xl mx-auto">
+            Discover our exclusive collection of Marvel collectibles and more.
+          </p>
         </div>
 
-        {/* Sorting Dropdown */}
-        <div className="relative w-1/5">
-          <select
-            className="w-full px-4 py-3 border border-gray-300 rounded-md bg-white shadow-sm text-gray-700 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none hover:bg-gray-50 transition-all appearance-none"
-            onChange={(e) => setSortOrder(e.target.value)} // Update sort order based on selection
-            value={sortOrder} // Set the current value of the dropdown
+        {/* Mobile Filter Button */}
+        <div className="md:hidden mb-4">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-md px-4 py-2 text-gray-700 hover:bg-gray-50"
           >
-            <option value="default">Sort by: Default</option>
-            <option value="lowToHigh">Price: Low to High</option>
-            <option value="highToLow">Price: High to Low</option>
-          </select>
+            <FiFilter />
+            <span>Filters & Sorting</span>
+          </button>
+        </div>
 
-          {/* Custom Dropdown Arrow */}
-          <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-            <IoIosArrowDropdownCircle size={20} />
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Filters Sidebar - Mobile */}
+          {showFilters && (
+            <div className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50">
+              <div className="bg-white h-full w-4/5 max-w-sm p-4 overflow-y-auto">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-lg font-semibold">Filters & Sorting</h2>
+                  <button onClick={() => setShowFilters(false)} className="text-gray-500 hover:text-gray-700">
+                    <FiFilter />
+                  </button>
+                </div>
+
+                {/* Categories */}
+                <div className="mb-6">
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">Categories</h3>
+                  <div className="space-y-2">
+                    {["all", "marvel", "exclusive"].map((cat) => (
+                      <button
+                        key={cat}
+                        className={`block w-full text-left px-3 py-2 rounded-md ${
+                          category === cat
+                            ? "bg-indigo-100 text-indigo-800 font-medium"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                        onClick={() => {
+                          setCategory(cat)
+                          setShowFilters(false)
+                        }}
+                      >
+                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sort Options */}
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">Sort By</h3>
+                  <div className="space-y-2">
+                    {[
+                      { value: "default", label: "Default" },
+                      { value: "lowToHigh", label: "Price: Low to High" },
+                      { value: "highToLow", label: "Price: High to Low" },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        className={`block w-full text-left px-3 py-2 rounded-md ${
+                          sortOrder === option.value
+                            ? "bg-indigo-100 text-indigo-800 font-medium"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                        onClick={() => {
+                          setSortOrder(option.value)
+                          setShowFilters(false)
+                        }}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Filters Sidebar - Desktop */}
+          <div className="hidden md:block w-64 flex-shrink-0">
+            <div className="sticky top-24 bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-lg font-semibold mb-6">Filters</h2>
+
+              {/* Categories */}
+              <div className="mb-8">
+                <h3 className="text-sm font-medium text-gray-900 mb-3">Categories</h3>
+                <div className="space-y-2">
+                  {["all", "marvel", "exclusive"].map((cat) => (
+                    <button
+                      key={cat}
+                      className={`block w-full text-left px-3 py-2 rounded-md ${
+                        category === cat
+                          ? "bg-indigo-100 text-indigo-800 font-medium"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                      onClick={() => setCategory(cat)}
+                    >
+                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sort Options */}
+              <div>
+                <h3 className="text-sm font-medium text-gray-900 mb-3">Sort By</h3>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  value={sortOrder}
+                >
+                  <option value="default">Default</option>
+                  <option value="lowToHigh">Price: Low to High</option>
+                  <option value="highToLow">Price: High to Low</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Products Grid */}
+          <div className="flex-1">
+            {/* View Mode and Results Count */}
+            <div className="flex justify-between items-center mb-6">
+              <p className="text-sm text-gray-500">Showing {filteredProducts.length} results</p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`p-2 rounded-md ${viewMode === "grid" ? "bg-indigo-100 text-indigo-800" : "text-gray-500"}`}
+                >
+                  <FiGrid size={18} />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`p-2 rounded-md ${viewMode === "list" ? "bg-indigo-100 text-indigo-800" : "text-gray-500"}`}
+                >
+                  <FiList size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Loading State */}
+            {loading && (
+              <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">{error}</div>}
+
+            {/* No Results */}
+            {!loading && !error && filteredProducts.length === 0 && (
+              <div className="text-center py-12">
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                <p className="text-gray-500">Try changing your filters or check back later.</p>
+              </div>
+            )}
+
+            {/* Grid View */}
+            {viewMode === "grid" && !loading && !error && filteredProducts.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((product) => (
+                  <div key={product._id} className="group relative">
+                    <Link to={`/product/${product._id}`} className="block">
+                      <div className="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
+                        <div className="relative pt-[100%] bg-gray-100">
+                          <img
+                            src={product.image || "/placeholder.svg"}
+                            alt={product.name}
+                            className="absolute inset-0 w-full h-full object-contain p-4"
+                          />
+
+                          {/* Quick Action Buttons */}
+                          <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <button
+                              onClick={(e) => handleAddToCart(e, product)}
+                              className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors"
+                              title="Add to cart"
+                            >
+                              <FiShoppingCart size={18} />
+                            </button>
+                            <Link
+                              to={`/product/${product._id}`}
+                              className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors"
+                              title="View details"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <FiEye size={18} />
+                            </Link>
+                          </div>
+                        </div>
+
+                        <div className="p-4">
+                          <h3 className="text-lg font-medium text-gray-900 mb-1">{product.name}</h3>
+                          <p className="text-indigo-600 font-bold">${product.price.toFixed(2)}</p>
+                          <p className="text-sm text-gray-500 mt-1 capitalize">{product.category}</p>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* List View */}
+            {viewMode === "list" && !loading && !error && filteredProducts.length > 0 && (
+              <div className="space-y-4">
+                {filteredProducts.map((product) => (
+                  <div key={product._id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <Link to={`/product/${product._id}`} className="flex flex-col sm:flex-row">
+                      <div className="w-full sm:w-48 h-48 bg-gray-100 flex-shrink-0">
+                        <img
+                          src={product.image || "/placeholder.svg"}
+                          alt={product.name}
+                          className="w-full h-full object-contain p-4"
+                        />
+                      </div>
+                      <div className="p-4 flex-1 flex flex-col">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-medium text-gray-900 mb-2">{product.name}</h3>
+                          <p className="text-sm text-gray-500 mb-4">{product.description}</p>
+                          <p className="text-sm text-gray-500 capitalize">Category: {product.category}</p>
+                        </div>
+                        <div className="flex items-center justify-between mt-4">
+                          <p className="text-lg font-bold text-indigo-600">${product.price.toFixed(2)}</p>
+                          <button
+                            onClick={(e) => handleAddToCart(e, product)}
+                            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                          >
+                            <FiShoppingCart size={16} />
+                            <span>Add to Cart</span>
+                          </button>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Display the products */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {sortedProducts.length > 0 ? (
-          sortedProducts.map((product) => (
-            <Link to={`/product/${product._id}`} key={product._id} className="group">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:-translate-y-1">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-auto max-h-[180px] object-contain bg-gray-100 p-4"
-                />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold">{product.name}</h3>
-                  <p className="text-indigo-600 text-xl font-bold">${product.price.toFixed(2)}</p>
-                  {/* <p className="text-sm text-gray-500">Category: {product.category.toUpperCase()}</p> */}
-                </div>
-              </div>
-            </Link>
-          ))
-        ) : (
-          <p className="text-center text-gray-500 text-lg">No products found.</p>
-        )}
+      {/* Toast Notification */}
+      <div
+        id="toast"
+        className="hidden fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-md shadow-lg flex items-center gap-2 z-50"
+      >
+        <FiShoppingCart size={18} />
+        <span>Added to cart!</span>
       </div>
     </div>
-  );
+  )
 }
 
-export default Products;
+export default Products
+
