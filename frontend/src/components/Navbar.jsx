@@ -54,12 +54,12 @@ function Navbar() {
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         scrolled ? "py-4 bg-white shadow-lg" : "py-6 bg-white"
       }`}
+      style={{ height: "115px" }} // Fixed height for the navbar
     >
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center h-16">
-        <Link to="/" className="text-2xl font-bold text-gray-800 hover:text-indigo-600 transition-colors">
-          {/* <span className="text-indigo-600">Pop</span>Verse<span className="text-indigo-600">Nepal</span> */}
-                <a href=""><img src="/logo.png" alt="Logo" className="h-20 object-contain"/></a>
-              </Link>
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        <Link to="/" className="flex items-center">
+          <img src="../../logo.png" alt="PopVerseNepal Logo" className="h-30 w-auto" />
+        </Link>
 
               <div className="hidden md:flex items-center gap-8">
                 <div className="flex gap-6 text-base font-medium">
