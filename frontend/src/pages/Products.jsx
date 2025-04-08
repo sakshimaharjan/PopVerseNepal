@@ -47,6 +47,15 @@ function Products() {
     fetchProducts()
   }, []) // Empty dependency array ensures this runs once after the component mounts
 
+  // Update category state based on URL query parameter
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const categoryParam = params.get("category");
+    if (categoryParam) {
+      setCategory(categoryParam);
+    }
+  }, []);
+
   // Filter products based on the selected category
   let filteredProducts =
     category === "all"
@@ -77,7 +86,7 @@ function Products() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+    <div className="min-h-screen bg-gray-50 pt-24 pb-12 mt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="text-center mb-10">
@@ -123,8 +132,11 @@ function Products() {
                             : "text-gray-700 hover:bg-gray-100"
                         }`}
                         onClick={() => {
-                          setCategory(cat)
-                          setShowFilters(false)
+                          setCategory(cat);
+                          setShowFilters(false);
+                            setTimeout(() => {
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                            }, 0);
                         }}
                       >
                         {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -168,27 +180,28 @@ function Products() {
             <div className="sticky top-24 bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-lg font-semibold mb-6">Filters</h2>
 
-              {/* Categories */}
-              <div className="mb-8">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Categories</h3>
-                <div className="space-y-2">
-                  {["all", "marvel", "exclusive"].map((cat) => (
-                    <button
-                      key={cat}
-                      className={`block w-full text-left px-3 py-2 rounded-md ${
-                        category === cat
-                          ? "bg-indigo-100 text-indigo-800 font-medium"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                      onClick={() => setCategory(cat)}
-                    >
-                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                    </button>
-                  ))}
-                </div>
+            {/* Categories */}
+            <div className="mb-8">
+              <h3 className="text-sm font-black text-gray-900 mb-3 ">Categories</h3>
+              <div className="space-y-2 ">
+                {["all", "marvel", "exclusive"].map((cat) => (
+                  <Link
+                    key={cat}
+                    to={`/products?category=${cat}`}
+                    className={`block w-full text-left px-3 py-2 rounded-md cursor-pointer ${
+                      category === cat || window.location.search.includes(`category=${cat}`)
+                        ? "bg-indigo-100 text-indigo-800 font-medium"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                    onClick={() => setCategory(cat)}
+                  >
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </Link>
+                ))}
               </div>
+            </div>
 
-              {/* Sort Options */}
+            {/* Sort Options */}
               <div>
                 <h3 className="text-sm font-medium text-gray-900 mb-3">Sort By</h3>
                 <select
@@ -261,14 +274,14 @@ function Products() {
                           <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                             <button
                               onClick={(e) => handleAddToCart(e, product)}
-                              className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors"
+                              className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-600  hover:text-white transition-colors"
                               title="Add to cart"
                             >
                               <FiShoppingCart size={18} />
                             </button>
                             <Link
                               to={`/product/${product._id}`}
-                              className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors"
+                              className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors "
                               title="View details"
                               onClick={(e) => e.stopPropagation()}
                             >

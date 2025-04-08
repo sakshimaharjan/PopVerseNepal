@@ -15,10 +15,12 @@ import UserDashboard from "./pages/UserDashboard"
 import NotFound from "./pages/NotFound"
 import Contact from './pages/Contact'
 import About from './pages/About'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AuthProvider>
         <CartProvider>
           <Navbar />
@@ -42,9 +44,9 @@ function App() {
             <Route
               path="/orders"
               element={
-                <ProtectedRoute>
+                
                   <Orders />
-                </ProtectedRoute>
+                
               }
             />
             <Route path="*" element={<NotFound />} />

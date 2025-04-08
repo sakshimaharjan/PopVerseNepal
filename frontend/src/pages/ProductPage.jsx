@@ -20,9 +20,9 @@ function ProductPage() {
 
   // Mock additional images for the product
   const additionalImages = [
-    "/placeholder.svg?height=400&width=400",
-    "/placeholder.svg?height=400&width=400",
-    "/placeholder.svg?height=400&width=400",
+    "/placeholder.png?height=400&width=400",
+    "/placeholder.png?height=400&width=400",
+    "/placeholder.png?height=400&width=400",
   ]
 
   useEffect(() => {
@@ -99,11 +99,11 @@ function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+    <div className="min-h-screen bg-gray-50 pt-24 pb-12 mt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex mb-6">
-          <button onClick={goBack} className="inline-flex items-center gap-2 text-gray-500 hover:text-indigo-600">
+          <button onClick={goBack} className="inline-flex items-center gap-2 text-gray-500 hover:text-indigo-600 cursor-pointer">
             <FiArrowLeft size={16} />
             <span>Back to products</span>
           </button>
@@ -216,12 +216,12 @@ function ProductPage() {
               <div className="flex flex-col sm:flex-row gap-4 mt-auto">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <FiShoppingCart size={18} />
                   <span>Add to Cart</span>
                 </button>
-                <button className="flex-1 border border-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                <button className="flex-1 border border-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 cursor-pointer">
                   <FiHeart size={18} />
                   <span>Add to Wishlist</span>
                 </button>
