@@ -122,7 +122,7 @@ function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Link to="/products?category=marvel" className="relative h-80 group overflow-hidden rounded-lg">
               <img
-                src="/marvel-collection.jpg"
+                src="/marvel.png"
                 alt="Marvel Collection"
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
               />

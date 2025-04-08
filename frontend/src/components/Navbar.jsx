@@ -52,7 +52,7 @@ function Navbar() {
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? "py-4 bg-white shadow-lg" : "py-6 bg-white/95"
+        scrolled ? "py-4 bg-white shadow-lg" : "py-6 bg-white"
       }`}
       style={{ height: "115px" }} // Fixed height for the navbar
     >
@@ -61,47 +61,47 @@ function Navbar() {
           <img src="../../logo.png" alt="PopVerseNepal Logo" className="h-30 w-auto" />
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          <div className="flex gap-6 text-base font-medium">
-            <Link to="/" className="text-gray-700 hover:text-indigo-600 transition-colors">
-              Home
-            </Link>
-            <Link to="/products" className="text-gray-700 hover:text-indigo-600 transition-colors">
-              Products
-            </Link>
-            <Link to="/about" className="text-gray-700 hover:text-indigo-600 transition-colors">
-              About
-            </Link>
-            <Link to="/contact" className="text-gray-700 hover:text-indigo-600 transition-colors">
-              Contact
-            </Link>
-          </div>
+              <div className="hidden md:flex items-center gap-8">
+                <div className="flex gap-6 text-base font-medium">
+                <Link to="/" className="text-gray-700 hover:text-indigo-600 transition-colors">
+                  Home
+                </Link>
+                <Link to="/products" className="text-gray-700 hover:text-indigo-600 transition-colors">
+                  Products
+                </Link>
+                <Link to="/about" className="text-gray-700 hover:text-indigo-600 transition-colors">
+                  About
+                </Link>
+                <Link to="/contact" className="text-gray-700 hover:text-indigo-600 transition-colors">
+                  Contact
+                </Link>
+                </div>
 
-          <div className="flex items-center gap-4">
-            <button className="text-gray-700 hover:text-indigo-600 transition-colors">
-              <FiSearch size={20} />
-            </button>
-            <Link to="/cart" className="text-gray-700 hover:text-indigo-600 transition-colors relative">
-              <FiShoppingCart size={20} />
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
-
-            {currentUser ? (
-              <div className="relative">
-                <button
-                  className="flex items-center gap-2 bg-indigo-100 text-indigo-800 px-3 py-1.5 rounded-full hover:bg-indigo-200 transition-colors"
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                >
-                  <FiUser size={18} />
-                  <span className="text-sm font-medium">{currentUser.name.split(" ")[0]}</span>
+                <div className="flex items-center gap-4">
+                <button className="text-gray-700 hover:text-indigo-600 transition-colors">
+                  <FiSearch size={20} />
                 </button>
+                <Link to="/cart" className="text-gray-700 hover:text-indigo-600 transition-colors relative">
+                  <FiShoppingCart size={20} />
+                  {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                  )}
+                </Link>
 
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                {currentUser ? (
+                  <div className="relative">
+                  <button
+                    className="flex items-center gap-2 bg-indigo-100 text-indigo-800 px-3 py-1.5 rounded-full hover:bg-indigo-200 transition-colors"
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                  >
+                    <FiUser size={18} />
+                    <span className="text-sm font-medium">{currentUser.name.split(" ")[0]}</span>
+                  </button>
+
+                  {showUserMenu && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
                     <Link
                       to="/dashboard"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50"
@@ -121,26 +121,26 @@ function Navbar() {
                       className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                     >
                       <div className="flex items-center gap-2">
-                        <FiLogOut size={16} />
-                        <span>Logout</span>
+                      <FiLogOut size={16} />
+                      <span>Logout</span>
                       </div>
                     </button>
+                    </div>
+                  )}
                   </div>
+                ) : (
+                  <Link
+                  to="/login"
+                  className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-1.5 rounded-md hover:bg-indigo-700 transition-colors"
+                  >
+                  <FiUser size={18} />
+                  <span className="text-sm font-medium">Login</span>
+                  </Link>
                 )}
+                </div>
               </div>
-            ) : (
-              <Link
-                to="/login"
-                className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-1.5 rounded-md hover:bg-indigo-700 transition-colors"
-              >
-                <FiUser size={18} />
-                <span className="text-sm font-medium">Login</span>
-              </Link>
-            )}
-          </div>
-        </div>
 
-        {/* Mobile Menu Button */}
+              {/* Mobile Menu Button */}
         <button className="md:hidden text-gray-700" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>

@@ -29,7 +29,7 @@ function UserDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 pt-24 px-4 sm:px-6 lg:px-8 mt-10">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
