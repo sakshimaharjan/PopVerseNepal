@@ -16,6 +16,8 @@ import NotFound from "./pages/NotFound"
 import Contact from './pages/Contact'
 import About from './pages/About'
 import ScrollToTop from './components/ScrollToTop'
+import Dashboard from "./pages/admin/Dashboard";
+import ProductManagement from "./pages/admin/ProductManagement";
 
 function App() {
   return (
@@ -27,7 +29,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/About" element={<About />} />
+            <Route path="/about" element={<About />} />
             <Route path="/product/:id" element={<ProductPage />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
@@ -44,18 +46,36 @@ function App() {
             <Route
               path="/orders"
               element={
-                
-                  <Orders />
-                
+                <Orders />
               }
             />
+
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/products"
+              element={
+                <ProtectedRoute>
+                  <ProductManagement />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
         </CartProvider>
       </AuthProvider>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
+

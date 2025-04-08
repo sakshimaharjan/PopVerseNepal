@@ -56,9 +56,9 @@ function Navbar() {
       }`}
       style={{ height: "115px" }} // Fixed height for the navbar
     >
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <Link to="/" className="flex items-center">
-          <img src="../../logo.png" alt="PopVerseNepal Logo" className="h-30 w-auto" />
+      <div className="max-w-7xl mx-auto px-3 flex justify-between items-center">
+        <Link to="/" className="flex items-center ">
+          <img src="../../logo.png" alt="PopVerseNepal Logo" className="h-20 w-auto" />
         </Link>
 
               <div className="hidden md:flex items-center gap-8">
