@@ -11,11 +11,13 @@ function Dashboard() {
     activeUsers: 0
   });
 
+  const api = import.meta.env.API_URL;
+
   useEffect(() => {
     // Fetch total products from the API
     const fetchTotalProducts = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/products'); 
+        const response = await fetch(`${api}api/products`); 
         const products = await response.json();
         setStats((prevStats) => ({
           ...prevStats,

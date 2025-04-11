@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Hero from '../components/Hero.jsx'
 
 function Home() {
+  const api = import.meta.env.VITE_API_URL;
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [limitedOffers, setLimitedOffers] = useState([]);
   const [showMoreFeatured, setShowMoreFeatured] = useState(false); // Show More for Featured
@@ -12,7 +13,7 @@ function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/products');
+        const response = await axios.get(`${api}/api/products`);
         const products = response.data;
   
         // Products with 'exclusive' category go to Featured Items

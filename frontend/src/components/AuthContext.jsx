@@ -10,10 +10,11 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const api = import.meta.env.API_URL;
   // API URL based on environment
   const API_URL = process.env.NODE_ENV === 'production'
     ? process.env.REACT_APP_API_URL || 'https://your-backend-domain.vercel.app/api'
-    : 'http://localhost:3000/api';
+    : `${api}/api`;
 
   useEffect(() => {
     // Check if user is logged in on page load

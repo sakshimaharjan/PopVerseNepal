@@ -25,11 +25,13 @@ function ProductPage() {
     "/placeholder.png?height=400&width=400",
   ]
 
+  const api = import.meta.env.API_URL;
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true)
-        const response = await axios.get(`http://localhost:3000/api/products/${id}`)
+        const response = await axios.get(`${api}/api/products/${id}`)
         setProduct(response.data)
         setLoading(false)
       } catch (error) {

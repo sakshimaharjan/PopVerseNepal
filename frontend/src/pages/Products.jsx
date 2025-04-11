@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { Link } from "react-router-dom"
@@ -27,13 +25,16 @@ function Products() {
   // Get cart functions
   const { addToCart } = useCart()
 
+  const api = import.meta.env.VITE_API_URL;
+
   // Fetch products from the API when the component mounts
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true)
         // Request products from the backend API
-        const response = await axios.get("http://localhost:3000/api/products")
+        const response = await axios.get(`${api}/api/products`)
+        console.log("reponse of product", api)
         // Store the products in the state
         setProducts(response.data)
         setLoading(false)
@@ -84,6 +85,9 @@ function Products() {
       }, 3000)
     }
   }
+
+  console.log("filter products: ",category, products);
+  
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12 mt-10">
@@ -301,7 +305,7 @@ function Products() {
                 ))}
               </div>
             )}
-
+            
             {/* List View */}
             {viewMode === "list" && !loading && !error && filteredProducts.length > 0 && (
               <div className="space-y-4">

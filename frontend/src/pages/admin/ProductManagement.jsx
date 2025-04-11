@@ -17,9 +17,12 @@ function ProductManagement() {
     fetchProducts();
   }, []);
 
+  const api = import.meta.env.API_URL;
+
+
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/products');
+      const response = await axios.get(`${api}/api/products`);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -36,8 +39,10 @@ function ProductManagement() {
       formDataToSend.append(key, formData[key]);
     });
 
+    const api = import.meta.env.API_URL;
+
     try {
-      const response = await axios.post('http://localhost:3000/api/products', formDataToSend, {
+      const response = await axios.post(`${api}/api/products`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
