@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { useAuth } from "../components/AuthContext"
 
-function SignUp() {
+function Signup() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -222,5 +222,5 @@ function SignUp() {
   )
 }
 
-export default SignUp
+export default Signup
 

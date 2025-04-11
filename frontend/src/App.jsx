@@ -10,7 +10,7 @@ import ProductPage from "./pages/ProductPage"
 import Cart from "./pages/Cart"
 import Orders from "./pages/Orders"
 import Login from "./pages/Login"
-import SignUp from "./pages/SignUp"
+import Signup from "./pages/Signup"
 import UserDashboard from "./pages/UserDashboard"
 import NotFound from "./pages/NotFound"
 import Contact from './pages/Contact'
@@ -33,7 +33,7 @@ function App() {
             <Route path="/product/:id" element={<ProductPage />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/contact" element={<Contact />} />
             <Route
               path="/dashboard"
