@@ -25,7 +25,8 @@ function Products() {
   // Get cart functions
   const { addToCart } = useCart()
 
-  const api = import.meta.env.VITE_API_URL;
+  const api = import.meta.env.API_URL;
+  const api_port = import.meta.env.PORT;
 
   // Fetch products from the API when the component mounts
   useEffect(() => {
@@ -33,7 +34,7 @@ function Products() {
       try {
         setLoading(true)
         // Request products from the backend API
-        const response = await axios.get(`${api}/api/products`)
+        const response = await axios.get(`${api}:${api_port}/api/products`)
         console.log("reponse of product", api)
         // Store the products in the state
         setProducts(response.data)

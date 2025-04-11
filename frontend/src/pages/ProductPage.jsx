@@ -26,12 +26,13 @@ function ProductPage() {
   ]
 
   const api = import.meta.env.API_URL;
+  const api_port = import.meta.env.PORT;
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true)
-        const response = await axios.get(`${api}/api/products/${id}`)
+        const response = await axios.get(`${api}:${api_port}/api/products/${id}`)
         setProduct(response.data)
         setLoading(false)
       } catch (error) {

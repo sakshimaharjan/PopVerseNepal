@@ -1,16 +1,14 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const fs = require('fs');
-const http = require('http');
-const https = require('https');
-const connectDB = require('./config/dbConfig');
-const errorHandler = require('./middleware/errorHandler');
+const connectDB = require('./config/dbConfig'); // DB connection config
+const errorHandler = require('./middleware/errorHandler'); // Error handler middleware
 
 dotenv.config();
 
 const app = express();
-const frontend = process.env.frontend;
+
+const frontend = process.env.frontend
 
 // Middleware
 app.use(cors({
@@ -21,33 +19,18 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database
+// Database connection
 connectDB();
 
 // Routes
 const productRoutes = require('./routes/products.js');
 const authRoutes = require('./routes/auth');
+
 app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
+
+// Error handling middleware
 app.use(errorHandler);
 
-// SSL Options
-const sslOptions = {
-  key: fs.readFileSync('/etc/ssl/private/ec2-ssl.key'),
-  cert: fs.readFileSync('/etc/ssl/certs/ec2-ssl.crt'),
-};
-
-// HTTPS server
-const httpsServer = https.createServer(sslOptions, app);
-httpsServer.listen(443, () => {
-  console.log('HTTPS Server running on port 443');
-});
-
-// Optional: Redirect HTTP → HTTPS
-const httpApp = express();
-httpApp.use((req, res) => {
-  res.redirect(`https://${req.headers.host}${req.url}`);
-});
-http.createServer(httpApp).listen(80, () => {
-  console.log('HTTP to HTTPS redirect server on port 80');
-});
+const PORT = process.env.PORT;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

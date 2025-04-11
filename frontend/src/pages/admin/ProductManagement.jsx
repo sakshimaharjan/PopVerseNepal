@@ -22,7 +22,7 @@ function ProductManagement() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${api}/api/products`);
+      const response = await axios.get(`${api}:{api_port}/api/products`);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -40,9 +40,10 @@ function ProductManagement() {
     });
 
     const api = import.meta.env.API_URL;
+    const api_port = import.meta.env.PORT;
 
     try {
-      const response = await axios.post(`${api}/api/products`, formDataToSend, {
+      const response = await axios.post(`${api}:${api_port}/api/products`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
