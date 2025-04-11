@@ -8,7 +8,7 @@ dotenv.config();
 
 const app = express();
 
-const frontend_url = process.env.frontend
+const frontend = process.env.frontend
 
 // Middleware
 app.use(cors({
