@@ -43,6 +43,7 @@ function Products() {
         setLoading(false)
       }
     }
+    
 
     fetchProducts()
   }, []) // Empty dependency array ensures this runs once after the component mounts
