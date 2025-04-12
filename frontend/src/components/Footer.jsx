@@ -1,5 +1,6 @@
 import { FaFacebook, FaTwitter, FaInstagram, FaTiktok } from "react-icons/fa"
 import { FiSend } from "react-icons/fi"
+import { Link } from "react-router-dom"
 
 const Footer = () => {
   return (
@@ -80,9 +81,9 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-4 uppercase">Support</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link to="/helpandsupport" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Help & Support
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">

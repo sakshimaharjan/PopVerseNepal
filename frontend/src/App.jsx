@@ -18,6 +18,7 @@ import About from './pages/About'
 import ScrollToTop from './components/ScrollToTop'
 import Dashboard from "./pages/admin/Dashboard";
 import ProductManagement from "./pages/admin/ProductManagement";
+import HelpSupport from "./pages/HelpSupport"
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/helpandsupport" element={<HelpSupport />} />
             <Route
               path="/dashboard"
               element={
