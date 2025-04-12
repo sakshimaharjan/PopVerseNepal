@@ -52,7 +52,6 @@ function App() {
               }
             />
 
-            {/* Admin Routes */}
             <Route
               path="/admin"
               element={
