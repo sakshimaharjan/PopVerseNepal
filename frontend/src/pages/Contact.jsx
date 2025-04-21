@@ -4,7 +4,7 @@ import { useState } from "react"
 import { FaMapMarkerAlt, FaEnvelope, FaPhone } from "react-icons/fa"
 import { FaInstagram, FaFacebook, FaTwitter, FaTiktok } from "react-icons/fa"
 import Navbar from "../components/Navbar"
-import Footer from "../components/Footer"
+import axios from "axios"
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -29,14 +29,15 @@ function Contact() {
     setIsSubmitting(true)
 
     try {
-      // This will be replaced with actual MongoDB connection later
-      console.log("Form data to be submitted:", formData)
+      // Send data to the backend API
+      const response = await axios.post("http://localhost:3000/api/contact", formData)
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      setSubmitStatus({ success: true, message: "Message sent successfully!" })
-      setFormData({ name: "", email: "", subject: "", message: "" })
+      if (response.data.success) {
+        setSubmitStatus({ success: true, message: "Message sent successfully!" })
+        setFormData({ name: "", email: "", subject: "", message: "" })
+      } else {
+        setSubmitStatus({ success: false, message: "Failed to send message. Please try again." })
+      }
     } catch (error) {
       console.error("Error submitting form:", error)
       setSubmitStatus({ success: false, message: "Failed to send message. Please try again." })

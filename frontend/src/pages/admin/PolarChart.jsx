@@ -1,12 +1,12 @@
-import React from "react";
-import { PolarArea } from "react-chartjs-2";
-import { Chart, RadialLinearScale, ArcElement, Tooltip, Legend } from "chart.js";
+import { PolarArea } from "react-chartjs-2"
+import { Chart, RadialLinearScale, ArcElement, Tooltip, Legend } from "chart.js"
 
 // Register necessary Chart.js components
-Chart.register(RadialLinearScale, ArcElement, Tooltip, Legend);
+Chart.register(RadialLinearScale, ArcElement, Tooltip, Legend)
 
-const PolarChart = () => {
-  const data = {
+const PolarChart = ({ data = null, options = {} }) => {
+  // Default data if none provided
+  const defaultData = {
     labels: ["Spider-Man", "Iron Man", "Captain America", "Thor", "Hulk"], // Marvel character categories
     datasets: [
       {
@@ -21,25 +21,21 @@ const PolarChart = () => {
         ],
       },
     ],
-  };
+  }
 
-  const options = {
+  const defaultOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    };
+  }
+
+  const chartData = data || defaultData
+  const chartOptions = { ...defaultOptions, ...options }
 
   return (
-    <div className="flex m-5">
-      <div className="bg-white p-6 rounded-4xl shadow-2xl w-96">
-        <h2 className="text-xl font-bold text-gray-800 text-center mb-4">
-          Marvel Funko Pop Sales by Character
-        </h2>
-        <div className="relative w-full h-80">
-          <PolarArea data={data} options={options} />
-        </div>
-      </div>
+    <div className="w-full h-full">
+      <PolarArea data={chartData} options={chartOptions} />
     </div>
-  );
-};
+  )
+}
 
-export default PolarChart;
+export default PolarChart

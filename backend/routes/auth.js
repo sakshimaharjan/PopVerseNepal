@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, admin } = require('../middleware/authMiddleware');
 
 // Generate JWT
 const generateToken = (id) => {
@@ -114,5 +114,18 @@ router.get('/profile', protect, async (req, res, next) => {
     next(error);
   }
 });
+
+// Get user count (admin only)
+router.get("/users/count", async (req, res) => { // add admin, protect here
+  try {
+    const count = await User.countDocuments()
+    console.log(`User count: ${count}`)
+    res.json({ count })
+  } catch (error) {
+    console.error("Error getting user count:", error)
+    res.status(500).json({ message: "Server error" })
+  }
+})
+
 
 module.exports = router;
