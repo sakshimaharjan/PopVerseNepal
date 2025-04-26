@@ -19,6 +19,9 @@ import ScrollToTop from './components/ScrollToTop'
 import Dashboard from "./pages/admin/Dashboard";
 import ProductManagement from "./pages/admin/ProductManagement";
 import HelpSupport from "./pages/HelpSupport"
+import TermsConditions from "./pages/TermsConditions"
+import PrivacyPolicy from "./pages/PrivacyPolicy"
+import FAQ from "./pages/FAQ"
 
 function App() {
   return (
@@ -37,6 +40,9 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/helpandsupport" element={<HelpSupport />} />
+            <Route path="/termsandcondition" element={<TermsConditions />} />
+            <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route
               path="/dashboard"
               element={

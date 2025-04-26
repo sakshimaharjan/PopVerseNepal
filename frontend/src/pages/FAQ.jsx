@@ -171,8 +171,6 @@ function FAQ() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   )
 }
