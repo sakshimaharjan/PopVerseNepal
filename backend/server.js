@@ -1,34 +1,41 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const connectDB = require('./config/dbConfig'); // DB connection config
-const errorHandler = require('./middleware/errorHandler'); // Error handler middleware
+const express = require("express")
+const dotenv = require("dotenv")
+const cors = require("cors")
+const connectDB = require("./config/dbConfig") // DB connection config
+const errorHandler = require("./middleware/errorHandler") // Error handler middleware
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
+const app = express()
 
 // Middleware
-app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"], // ✅ Allow both Vite and Next.js dev servers
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+)
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // Database connection
-connectDB();
+connectDB()
 
 // Routes
-const productRoutes = require('./routes/products.js');
-const authRoutes = require('./routes/auth');
+const productRoutes = require("./routes/products.js")
+const authRoutes = require("./routes/auth")
+const orderRoutes = require("./routes/orders")
+const contactRoutes = require("./routes/contact")
 
-app.use('/api/products', productRoutes);
-app.use('/api/auth', authRoutes);
+app.use("/api/products", productRoutes)
+app.use("/api/auth", authRoutes)
+app.use("/api/orders", orderRoutes)
+app.use("/api/contact", contactRoutes)
 
 // Error handling middleware
-app.use(errorHandler);
+app.use(errorHandler)
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5000
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

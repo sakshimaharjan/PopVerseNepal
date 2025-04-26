@@ -62,11 +62,27 @@ function Products() {
       ? products // If "all" is selected, show all products
       : products.filter((product) => product.category === category) // Filter by selected category
 
-  // Sort the filtered products based on the selected sorting order
+  // Sort the filtered products based on the selected sorting order bubble sort
+  const bubbleSort = (arr, ascending = true) => {
+    const sorted = [...arr]
+    const n = sorted.length
+    for (let i = 0; i < n - 1; i++) {
+      for (let j = 0; j < n - i - 1; j++) {
+        if (
+          (ascending && sorted[j].price > sorted[j + 1].price) ||
+          (!ascending && sorted[j].price < sorted[j + 1].price)
+        ) {
+          [sorted[j], sorted[j + 1]] = [sorted[j + 1], sorted[j]]
+        }
+      }
+    }
+    return sorted
+  }
+
   if (sortOrder === "lowToHigh") {
-    filteredProducts = [...filteredProducts].sort((a, b) => a.price - b.price)
+    filteredProducts = bubbleSort(filteredProducts, true)
   } else if (sortOrder === "highToLow") {
-    filteredProducts = [...filteredProducts].sort((a, b) => b.price - a.price)
+    filteredProducts = bubbleSort(filteredProducts, false)
   }
 
   // Handle add to cart

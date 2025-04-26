@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
 import { AuthProvider } from "./components/AuthContext"
 import { CartProvider } from "./components/CartContext"
 import ProtectedRoute from "./components/ProtectedRoute"
@@ -13,20 +13,20 @@ import Login from "./pages/Login"
 import SignUp from "./pages/SignUp"
 import UserDashboard from "./pages/UserDashboard"
 import NotFound from "./pages/NotFound"
-import Contact from './pages/Contact'
-import About from './pages/About'
-import ScrollToTop from './components/ScrollToTop'
-import Dashboard from "./pages/admin/Dashboard";
-import ProductManagement from "./pages/admin/ProductManagement";
+import Contact from "./pages/Contact"
+import About from "./pages/About"
+import ScrollToTop from "./components/ScrollToTop"
+import Dashboard from "./pages/admin/Dashboard"
+import ProductManagement from "./pages/admin/ProductManagement"
+import OrderManagement from "./pages/admin/OrderManagement"
+import ContactManagement from "./pages/admin/ContactManagement"
 import HelpSupport from "./pages/HelpSupport"
-import TermsConditions from "./pages/TermsConditions"
-import PrivacyPolicy from "./pages/PrivacyPolicy"
-import FAQ from "./pages/FAQ"
 
 function App() {
   return (
     <Router>
       <ScrollToTop />
+      <KhaltiScript />
       <AuthProvider>
         <CartProvider>
           <Navbar />
@@ -40,9 +40,6 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/helpandsupport" element={<HelpSupport />} />
-            <Route path="/termsandcondition" element={<TermsConditions />} />
-            <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-            <Route path="/faq" element={<FAQ />} />
             <Route
               path="/dashboard"
               element={
@@ -58,31 +55,46 @@ function App() {
               }
             />
 
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/products"
-              element={
-                <ProtectedRoute>
-                  <ProductManagement />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/admin"
+                element={
+                  
+                    <Dashboard />
+                  
+                }
+              />
+              <Route
+                path="/admin/products"
+                element={
+                  
+                    <ProductManagement />
+                  
+                }
+              />
+              <Route
+                path="/admin/orders"
+                element={
+                  
+                    <OrderManagement />
+                  
+                }
+              />
+              <Route
+                path="/admin/contacts"
+                element={
+                  
+                    <ContactManagement />
+                  
+                }
+              />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Footer />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AppLayout>
         </CartProvider>
       </AuthProvider>
     </Router>
-  );
+  )
 }
 
-export default App;
-
+export default App
