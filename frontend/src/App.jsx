@@ -47,34 +47,31 @@ function App() {
       <KhaltiScript />
       <AuthProvider>
         <CartProvider>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/product/:id" element={<ProductPage />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/helpandsupport" element={<HelpSupport />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <UserDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/orders" element={<Orders />} />
-              <Route
-                path="/checkout"
-                element={
-                  <ProtectedRoute>
-                    <Checkout />
-                  </ProtectedRoute>
-                }
-              />
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/helpandsupport" element={<HelpSupport />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <UserDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <Orders />
+              }
+            />
 
               <Route
                 path="/admin"
