@@ -96,7 +96,7 @@ function Orders() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+    <div className="min-h-screen bg-gray-50 pt-24 pb-12 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
@@ -125,7 +125,7 @@ function Orders() {
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 mt-20">
             {orders.map((order) => (
               <div key={order.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
                 {/* Order Header */}

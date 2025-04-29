@@ -116,19 +116,18 @@ function AdminLayout({ children }) {
                 <span>Settings</span>
               </Link>
             </li>
+            <li>
+              <Link
+                to="/logout"
+                className="flex items-center gap-3 px-4 py-3 rounded-md text-indigo-100 hover:bg-indigo-700 transition-colors"
+                onClick={closeSidebar}
+              >
+                <FiLogOut size={18} />
+                <span>Logout</span>
+              </Link>
+            </li>
           </ul>
         </nav>
-
-        <div className="absolute bottom-0 w-full p-4 border-t border-indigo-700">
-          <Link
-            to="/logout"
-            className="flex items-center gap-3 px-4 py-3 rounded-md text-indigo-100 hover:bg-indigo-700 transition-colors"
-            onClick={closeSidebar}
-          >
-            <FiLogOut size={18} />
-            <span>Logout</span>
-          </Link>
-        </div>
       </div>
 
       {/* Main Content */}
@@ -140,7 +139,7 @@ function AdminLayout({ children }) {
           </button>
           <div className="flex-1"></div>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-700">Admin User</div>
+            <div className="text-sm text-gray-700">Aayush Shrestha</div>
             <div className="h-8 w-8 rounded-full bg-indigo-600 text-white flex items-center justify-center">A</div>
           </div>
         </header>

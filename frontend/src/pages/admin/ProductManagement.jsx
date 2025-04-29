@@ -176,7 +176,7 @@ function ProductManagement() {
           {/* Product Form */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">{editMode ? "Edit Product" : "Add New Product"}</h2>
+              <h2 className="text-xl font-semibold mb-4 cursor-pointer">{editMode ? "Edit Product" : "Add New Product"}</h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">Product Name</label>
@@ -263,7 +263,7 @@ function ProductManagement() {
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="flex-1 py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {editMode ? (
                       <>
@@ -281,7 +281,7 @@ function ProductManagement() {
                     <button
                       type="button"
                       onClick={resetForm}
-                      className="py-2 px-4 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                      className="py-2 px-4 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -366,13 +366,13 @@ function ProductManagement() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button
                               onClick={() => handleEdit(product)}
-                              className="text-indigo-600 hover:text-indigo-900 mr-3"
+                              className="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer"
                             >
                               Edit
                             </button>
                             <button
                               onClick={() => handleDelete(product._id)}
-                              className="text-red-600 hover:text-red-900"
+                              className="text-red-600 hover:text-red-900 cursor-pointer"
                             >
                               Delete
                             </button>

@@ -10,8 +10,7 @@ function UserDashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // This would normally fetch the user's orders
-    // For demo purposes, we'll use mock data
+
     const mockOrders = [
       { id: "1", date: "2025-04-01", status: "Delivered", total: 59.99 },
       { id: "2", date: "2025-03-28", status: "Processing", total: 29.99 },

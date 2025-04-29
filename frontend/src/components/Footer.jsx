@@ -9,9 +9,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
           <div>
-            <h2 className="text-xl font-bold mb-4">
-              <span className="text-indigo-600">Pop</span>Verse<span className="text-indigo-600">Nepal</span>
-            </h2>
+            <Link to="/" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+            <img src="/logo.png" alt="PopVerse Nepal Logo" height={150} width={150} className="cursor-pointer mb-4"/>
+            </Link>
             <p className="text-gray-600 mb-6">Discover the perfect, stylish Funko Pops for your collection.</p>
             <div className="flex space-x-5">
               <a
@@ -54,24 +54,24 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-4 uppercase">Categories</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link href="/products?category=exclusive" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Exclusive Edition
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Limited Edition
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link href="/products?category=marvel" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Marvel Collection
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Special Offers
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -86,19 +86,19 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Terms & Conditions
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   FAQ
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

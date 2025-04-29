@@ -32,7 +32,9 @@ const AppLayout = ({ children }) => {
   return (
     <>
       {!isAdminRoute && <Navbar />}
+      {/* <div className="mt-24"> */}
       {children}
+      {/* </div> */}
       {!isAdminRoute && <Footer />}
     </>
   )
@@ -77,33 +79,33 @@ function App() {
               <Route
                 path="/admin"
                 element={
-                  
+                  <ProtectedRoute>
                     <Dashboard />
-                  
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/admin/products"
                 element={
-                  
+                  <ProtectedRoute>
                     <ProductManagement />
-                  
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/admin/orders"
                 element={
-                  
+                  <ProtectedRoute>
                     <OrderManagement />
-                  
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/admin/contacts"
                 element={
-                  
+                  <ProtectedRoute>
                     <ContactManagement />
-                  
+                  </ProtectedRoute>
                 }
               />
 

@@ -27,7 +27,7 @@ router.post("/", protect, async (req, res) => {
 })
 
 // Get all orders for a user
-router.get("/user", async (req, res) => { // add protect here
+router.get("/user", protect, async (req, res) => { 
   try {
     const orders = await Order.find({ user: req.user.id }).sort({ createdAt: -1 }).populate("items.product")
 
@@ -39,7 +39,7 @@ router.get("/user", async (req, res) => { // add protect here
 })
 
 // Admin: Get all orders
-router.get("/admin", async (req, res) => { // add admin, protect here
+router.get("/admin", protect, async (req, res) => { // add admin here
   try {
     console.log("Admin requesting all orders")
     const orders = await Order.find({}).sort({ createdAt: -1 }).populate("user", "name email").populate("items.product")
@@ -74,7 +74,7 @@ router.get("/:id", protect, async (req, res) => {
 })
 
 // Admin: Update order status
-router.put("/:id/status", protect, admin, async (req, res) => {
+router.put("/:id/status", protect, async (req, res) => { //admin here
   try {
     const { status } = req.body
 

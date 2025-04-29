@@ -16,7 +16,7 @@ const generateToken = (id) => {
 // @access  Public
 router.post('/register', async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -32,6 +32,7 @@ router.post('/register', async (req, res, next) => {
       name,
       email,
       password,
+      role,
     });
 
     if (user) {
@@ -116,7 +117,7 @@ router.get('/profile', protect, async (req, res, next) => {
 });
 
 // Get user count (admin only)
-router.get("/users/count", async (req, res) => { // add admin, protect here
+router.get("/users/count", protect, admin, async (req, res) => {
   try {
     const count = await User.countDocuments()
     console.log(`User count: ${count}`)

@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
 })
 
 // Admin: Get all contact messages
-router.get("/admin", async (req, res) => { // add admin, protect here
+router.get("/admin", protect, async (req, res) => { //admin here
   try {
     const contacts = await Contact.find().sort({ createdAt: -1 })
     res.json(contacts)
@@ -36,7 +36,7 @@ router.get("/admin", async (req, res) => { // add admin, protect here
 })
 
 // Admin: Update contact status
-router.put("/:id/status", async (req, res) => { // add admin, protect here
+router.put("/:id/status", protect, async (req, res) => {  //admin here
   try {
     const { status } = req.body
 

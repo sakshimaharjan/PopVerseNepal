@@ -141,7 +141,7 @@ function Navbar() {
               </div>
 
               {/* Mobile Menu Button */}
-        <button className="md:hidden text-gray-700" onClick={() => setIsOpen(!isOpen)}>
+        <button className="md:hidden cursor-pointer hover:text-indigo-600 text-gray-700" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
       </div>
