@@ -1,4 +1,5 @@
 import { FaShippingFast, FaCheckCircle, FaUserFriends } from "react-icons/fa"
+import Footer from "../components/Footer"
 
 function About() {
   return (
@@ -38,14 +39,14 @@ function About() {
             </p>
           </div>
           <div className="rounded-lg overflow-hidden shadow-lg">
-            <img src="/placeholder.svg?height=400&width=600" alt="Our Story" className="w-full h-full object-cover" />
+            <img src="../hero.png?height=400&width=600" alt="Our Story" className="w-full h-full object-cover" />
           </div>
         </section>
 
         {/* Our Mission Section */}
         <section className="mb-16 grid md:grid-cols-2 gap-12 items-center">
           <div className="order-2 md:order-1 rounded-lg overflow-hidden shadow-lg">
-            <img src="/placeholder.svg?height=400&width=600" alt="Our Mission" className="w-full h-full object-cover" />
+            <img src="../marvel.png?height=400&width=600" alt="Our Mission" className="w-full h-full object-cover" />
           </div>
           <div className="order-1 md:order-2">
             <h2 className="text-3xl font-bold mb-6 text-gray-900">Our Mission</h2>
@@ -135,6 +136,7 @@ function About() {
           </div>
         </section>
       </div>
+      <Footer/>
     </div>
   )
 }

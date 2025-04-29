@@ -23,6 +23,9 @@ import ContactManagement from "./pages/admin/ContactManagement"
 import HelpSupport from "./pages/HelpSupport"
 import Checkout from "./pages/Checkout"
 import KhaltiScript from "./components/KhaltiScript"
+import TermsConditions from "./pages/TermsConditions"
+import PrivacyPolicy from "./pages/PrivacyPolicy"
+import FAQ from "./pages/FAQ"
 
 // Layout wrapper to conditionally render Navbar and Footer
 const AppLayout = ({ children }) => {
@@ -58,6 +61,10 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/helpandsupport" element={<HelpSupport />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/termsandconditions" element={<TermsConditions />} />
+            <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+            
             <Route
               path="/dashboard"
               element={
@@ -108,7 +115,6 @@ function App() {
 
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </AppLayout>
         </CartProvider>
       </AuthProvider>
     </Router>

@@ -5,6 +5,7 @@ import axios from "axios"
 import { Link } from "react-router-dom"
 import { FiFilter, FiGrid, FiList, FiShoppingCart, FiEye } from "react-icons/fi"
 import { useCart } from "../components/CartContext"
+import Footer from "../components/Footer"
 
 function Products() {
   // State for storing products fetched from the API
@@ -106,7 +107,7 @@ function Products() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">Our Collection</h1>
+          <h1 className=" mt-7 text-4xl font-extrabold text-gray-900 sm:text-5xl">Our Collection</h1>
           <p className="mt-4 text-xl text-gray-500 max-w-3xl mx-auto">
             Discover our exclusive collection of Marvel collectibles and more.
           </p>
@@ -365,6 +366,7 @@ function Products() {
         <FiShoppingCart size={18} />
         <span>Added to cart!</span>
       </div>
+      <Footer/>
     </div>
   )
 }
