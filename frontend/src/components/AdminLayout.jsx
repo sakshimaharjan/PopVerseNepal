@@ -1,12 +1,27 @@
 "use client"
 
 import { useState } from "react"
-import { Link, useLocation } from "react-router-dom"
-import { FiHome, FiPackage, FiShoppingBag, FiUsers, FiSettings, FiMenu, FiX, FiLogOut, FiMail } from "react-icons/fi"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import {
+  FiHome,
+  FiPackage,
+  FiShoppingBag,
+  FiUsers,
+  FiSettings,
+  FiMenu,
+  FiX,
+  FiLogOut,
+  FiMail,
+  FiAlertTriangle,
+} from "react-icons/fi"
+import { useAuth } from "./AuthContext"
 
 function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { currentUser, logout } = useAuth()
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
@@ -18,6 +33,22 @@ function AdminLayout({ children }) {
 
   const isActive = (path) => {
     return location.pathname === path
+  }
+
+  const handleLogout = () => {
+    logout()
+    navigate("/")
+  }
+
+  // Get user initials for avatar
+  const getUserInitials = () => {
+    if (!currentUser || !currentUser.name) return "U"
+
+    const nameParts = currentUser.name.split(" ")
+    if (nameParts.length > 1) {
+      return (nameParts[0][0] + nameParts[1][0]).toUpperCase()
+    }
+    return nameParts[0][0].toUpperCase()
   }
 
   return (
@@ -41,6 +72,21 @@ function AdminLayout({ children }) {
             <FiX size={24} />
           </button>
         </div>
+
+        {/* User Info in Sidebar */}
+        {currentUser && (
+          <div className="px-6 py-4 border-b border-indigo-700">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-medium">
+                {getUserInitials()}
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-white font-medium truncate">{currentUser.name}</p>
+                <p className="text-indigo-200 text-sm truncate">{currentUser.email}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <nav className="mt-6 px-4">
           <ul className="space-y-2">
@@ -117,14 +163,13 @@ function AdminLayout({ children }) {
               </Link>
             </li>
             <li>
-              <Link
-                to="/logout"
-                className="flex items-center gap-3 px-4 py-3 rounded-md text-indigo-100 hover:bg-indigo-700 transition-colors"
-                onClick={closeSidebar}
+              <button
+                onClick={() => setShowLogoutConfirm(true)}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-md text-indigo-100 hover:bg-indigo-700 transition-colors"
               >
                 <FiLogOut size={18} />
                 <span>Logout</span>
-              </Link>
+              </button>
             </li>
           </ul>
         </nav>
@@ -139,14 +184,46 @@ function AdminLayout({ children }) {
           </button>
           <div className="flex-1"></div>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-700">Aayush Shrestha</div>
-            <div className="h-8 w-8 rounded-full bg-indigo-600 text-white flex items-center justify-center">A</div>
+            {currentUser && (
+              <>
+                <div className="text-sm text-gray-700 hidden sm:block">{currentUser.name}</div>
+                <div className="h-8 w-8 rounded-full bg-indigo-600 text-white flex items-center justify-center">
+                  {getUserInitials()}
+                </div>
+              </>
+            )}
           </div>
         </header>
 
         {/* Page Content */}
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+                <FiAlertTriangle size={20} />
+              </div>
+              <h2 className="text-xl font-bold">Confirm Logout</h2>
+            </div>
+            <p className="text-gray-600 mb-6">Are you sure you want to logout from the admin panel?</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button onClick={handleLogout} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                Yes, Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

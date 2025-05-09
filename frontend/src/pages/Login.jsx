@@ -1,43 +1,59 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { useAuth } from '../components/AuthContext';
+"use client"
+
+import { Link, useNavigate, useLocation } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { useAuth } from "../components/AuthContext"
+import { useCart } from "../components/CartContext"
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login, error: authError } = useAuth();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login, error: authError } = useAuth()
+  const { mergeGuestCart } = useCart()
 
   // Check if user was redirected from signup page
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    if (params.get('registered') === 'true') {
-      setSuccessMessage('Registration successful! Please log in.');
+    const params = new URLSearchParams(location.search)
+    if (params.get("registered") === "true") {
+      setSuccessMessage("Registration successful! Please log in.")
     }
-  }, [location]);
+  }, [location])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+    e.preventDefault()
+    setError("")
+    setLoading(true)
 
     try {
-      const userData = await login(email, password);
-      if (userData.role === 'admin') {
-        navigate('/admin');
+      const userData = await login(email, password)
+
+      // Merge guest cart with user cart after successful login
+      mergeGuestCart()
+
+      // Redirect based on user role
+      if (userData.role === "admin") {
+        navigate("/admin")
       } else {
-        navigate('/dashboard');
+        // Check if there's a redirect parameter
+        const params = new URLSearchParams(location.search)
+        const redirectTo = params.get("redirect")
+        if (redirectTo) {
+          navigate(`/${redirectTo}`)
+        } else {
+          navigate("/dashboard")
+        }
       }
     } catch (err) {
-      setError(authError || 'Invalid credentials');
+      setError(authError || "Invalid credentials")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-16 pb-16">
@@ -69,11 +85,7 @@ function Login() {
           </div>
         )}
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
+        {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           {/* Email Field */}
@@ -170,7 +182,7 @@ function Login() {
         </form>
       </div>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default Login

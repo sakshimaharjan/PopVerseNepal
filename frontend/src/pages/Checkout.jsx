@@ -8,9 +8,6 @@ import { useAuth } from "../components/AuthContext"
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js"
 import axios from "axios"
 
-// Declare KhaltiCheckout
-let KhaltiCheckout
-
 function Checkout() {
   const { cart, cartTotal, clearCart } = useCart()
   const { currentUser } = useAuth()
@@ -31,30 +28,34 @@ function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [orderComplete, setOrderComplete] = useState(false)
   const [orderId, setOrderId] = useState(null)
-  const [paymentMethod, setPaymentMethod] = useState("khalti")
+  const [paymentMethod, setPaymentMethod] = useState("cash_on_delivery")
+  const [formValidated, setFormValidated] = useState(false)
+  const [paymentError, setPaymentError] = useState("")
 
-  // Calculate shipping cost
-  const shippingCost = cartTotal > 100 ? 0 : 10
+  // Payment settings from localStorage
+  const [paymentSettings, setPaymentSettings] = useState({
+    enablePaypal: true,
+    enableKhalti: true,
+    enableCashOnDelivery: true,
+    minimumOrderAmount: 10,
+    freeShippingThreshold: 100,
+  })
+
+  // Load payment settings from localStorage
+  useEffect(() => {
+    const savedPaymentSettings = localStorage.getItem("payment_settings")
+    if (savedPaymentSettings) {
+      setPaymentSettings(JSON.parse(savedPaymentSettings))
+    }
+  }, [])
+
+  // Calculate shipping cost based on settings
+  const shippingCost = cartTotal >= paymentSettings.freeShippingThreshold ? 0 : 10
 
   // Calculate final total
   const finalTotal = cartTotal + shippingCost
 
-  // Initialize Khalti checkout when needed
-  const getKhaltiCheckout = () => {
-    // Check if KhaltiCheckout is available globally
-    if (window.KhaltiCheckout) {
-      return new window.KhaltiCheckout(khaltiConfig)
-    }
-    console.error("Khalti Checkout not loaded")
-    return null
-  }
-
   useEffect(() => {
-    // Dynamically import KhaltiCheckout when the component mounts
-    import("khalti-checkout-web").then((module) => {
-      KhaltiCheckout = module.default
-    })
-
     // Redirect to cart if cart is empty
     if (cart.length === 0 && !orderComplete) {
       navigate("/cart")
@@ -64,7 +65,27 @@ function Checkout() {
     if (!currentUser && !orderComplete) {
       navigate("/login?redirect=checkout")
     }
-  }, [cart, currentUser, navigate, orderComplete])
+
+    // Set default payment method based on available options
+    if (!paymentSettings.enableCashOnDelivery && paymentMethod === "cash_on_delivery") {
+      if (paymentSettings.enablePaypal) {
+        setPaymentMethod("paypal")
+      } else if (paymentSettings.enableKhalti) {
+        setPaymentMethod("khalti")
+      }
+    }
+  }, [cart, currentUser, navigate, orderComplete, paymentSettings, paymentMethod])
+
+  // Check if order meets minimum amount
+  useEffect(() => {
+    if (cartTotal < paymentSettings.minimumOrderAmount) {
+      setPaymentError(
+        `Minimum order amount is $${paymentSettings.minimumOrderAmount}. Please add more items to your cart.`,
+      )
+    } else {
+      setPaymentError("")
+    }
+  }, [cartTotal, paymentSettings.minimumOrderAmount])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -74,14 +95,36 @@ function Checkout() {
     }))
   }
 
+  // Validate form before submission
+  const validateForm = () => {
+    const requiredFields = ["firstName", "lastName", "email", "streetAddress", "city", "postalCode", "phone"]
+    const isValid = requiredFields.every((field) => formData[field] && formData[field].trim() !== "")
+    setFormValidated(isValid)
+    return isValid
+  }
+
   const handleSubmit = async (e) => {
     if (e) e.preventDefault()
+
+    // Check minimum order amount
+    if (cartTotal < paymentSettings.minimumOrderAmount) {
+      setPaymentError(
+        `Minimum order amount is $${paymentSettings.minimumOrderAmount}. Please add more items to your cart.`,
+      )
+      return
+    }
+
+    // Validate form first
+    if (!validateForm()) {
+      alert("Please fill in all required fields")
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
       // Create order in database
       const orderData = {
-        user: currentUser?._id,
         items: cart.map((item) => ({
           product: item._id,
           quantity: item.quantity,
@@ -149,34 +192,40 @@ function Checkout() {
     })
   }
 
-  // Khalti payment configuration
-  const khaltiConfig = {
-    // This is the correct format for Khalti test public key
-    publicKey: "test_public_key_dc74e0fd57cb46cd93832aee0a390234",
-    productIdentity: "1234567890",
-    productName: "Marvel Pop Express Order",
-    productUrl: "http://localhost:5173",
-    amount: finalTotal * 100, // amount in paisa (100 paisa = 1 NPR)
-    eventHandler: {
-      onSuccess(payload) {
-        // Handle successful payment
-        console.log("Khalti payment successful:", payload)
-        handleSubmit()
-      },
-      onError(error) {
-        console.log("Khalti payment error:", error)
-        alert("Payment failed. Please try again.")
-      },
-      onClose() {
-        console.log("Khalti widget closed")
-      },
-    },
-  }
-
-  // Update the handleKhaltiPayment function
+  // Handle Khalti payment
   const handleKhaltiPayment = () => {
-    const checkout = getKhaltiCheckout()
-    if (checkout) {
+    // Validate form first
+    if (!validateForm()) {
+      alert("Please fill in all required fields")
+      return
+    }
+
+    if (window.KhaltiCheckout) {
+      const config = {
+        publicKey: "test_public_key_dc74e0fd57cb46cd93832aee0a390234",
+        productIdentity: "1234567890",
+        productName: "Marvel Pop Express Order",
+        productUrl: "http://localhost:5173",
+        amount: finalTotal * 100, // amount in paisa (100 paisa = 1 NPR)
+        eventHandler: {
+          onSuccess(payload) {
+            // Handle successful payment
+            console.log("Khalti payment successful:", payload)
+            handleSubmit()
+          },
+          onError(error) {
+            console.log("Khalti payment error:", error)
+            alert("Payment failed. Please try again.")
+            setIsSubmitting(false)
+          },
+          onClose() {
+            console.log("Khalti widget closed")
+            setIsSubmitting(false)
+          },
+        },
+      }
+
+      const checkout = new window.KhaltiCheckout(config)
       checkout.show({ amount: finalTotal * 100 })
     } else {
       alert("Payment gateway is loading. Please try again in a moment.")
@@ -202,7 +251,7 @@ function Checkout() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to="/dashboard"
+                to="/orders"
                 className="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition-colors"
               >
                 View Order Status
@@ -232,11 +281,25 @@ function Checkout() {
 
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
+        {paymentError && (
+          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{paymentError}</div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Checkout Form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <form onSubmit={handleSubmit}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (paymentMethod === "cash_on_delivery") {
+                    handleCashOnDelivery()
+                  } else if (paymentMethod === "khalti") {
+                    handleKhaltiPayment()
+                  }
+                  // PayPal is handled by its own component
+                }}
+              >
                 {/* Customer Information */}
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-lg font-medium text-gray-900 mb-6">Customer Information</h2>
@@ -396,66 +459,88 @@ function Checkout() {
 
                   <div className="space-y-4">
                     {/* Khalti Payment Option */}
-                    <div className="flex items-center">
-                      <input
-                        id="khalti"
-                        name="paymentMethod"
-                        type="radio"
-                        value="khalti"
-                        checked={paymentMethod === "khalti"}
-                        onChange={() => setPaymentMethod("khalti")}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                      />
-                      <label htmlFor="khalti" className="ml-3 block text-sm font-medium text-gray-700">
-                        Khalti Digital Wallet
-                      </label>
-                      <img src="/placeholder.svg?height=30&width=80&text=Khalti" alt="Khalti" className="h-8 ml-auto" />
-                    </div>
+                    {paymentSettings.enableKhalti && (
+                      <div className="flex items-center">
+                        <input
+                          id="khalti"
+                          name="paymentMethod"
+                          type="radio"
+                          value="khalti"
+                          checked={paymentMethod === "khalti"}
+                          onChange={() => setPaymentMethod("khalti")}
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                        />
+                        <label htmlFor="khalti" className="ml-3 block text-sm font-medium text-gray-700">
+                          Khalti Digital Wallet
+                        </label>
+                        <img
+                          src="/placeholder.svg?height=30&width=80&text=Khalti"
+                          alt="Khalti"
+                          className="h-8 ml-auto"
+                        />
+                      </div>
+                    )}
 
                     {/* PayPal Payment Option */}
-                    <div className="flex items-center">
-                      <input
-                        id="paypal"
-                        name="paymentMethod"
-                        type="radio"
-                        value="paypal"
-                        checked={paymentMethod === "paypal"}
-                        onChange={() => setPaymentMethod("paypal")}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                      />
-                      <label htmlFor="paypal" className="ml-3 block text-sm font-medium text-gray-700">
-                        PayPal
-                      </label>
-                      <img src="/placeholder.svg?height=30&width=80&text=PayPal" alt="PayPal" className="h-8 ml-auto" />
-                    </div>
+                    {paymentSettings.enablePaypal && (
+                      <div className="flex items-center">
+                        <input
+                          id="paypal"
+                          name="paymentMethod"
+                          type="radio"
+                          value="paypal"
+                          checked={paymentMethod === "paypal"}
+                          onChange={() => setPaymentMethod("paypal")}
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                        />
+                        <label htmlFor="paypal" className="ml-3 block text-sm font-medium text-gray-700">
+                          PayPal
+                        </label>
+                        <img
+                          src="/placeholder.svg?height=30&width=80&text=PayPal"
+                          alt="PayPal"
+                          className="h-8 ml-auto"
+                        />
+                      </div>
+                    )}
 
                     {/* Cash on Delivery Option */}
-                    <div className="flex items-center">
-                      <input
-                        id="cash_on_delivery"
-                        name="paymentMethod"
-                        type="radio"
-                        value="cash_on_delivery"
-                        checked={paymentMethod === "cash_on_delivery"}
-                        onChange={() => setPaymentMethod("cash_on_delivery")}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                      />
-                      <label htmlFor="cash_on_delivery" className="ml-3 block text-sm font-medium text-gray-700">
-                        Cash on Delivery
-                      </label>
-                      <div className="ml-auto">
-                        <FiTruck className="h-8 w-8 text-gray-500" />
+                    {paymentSettings.enableCashOnDelivery && (
+                      <div className="flex items-center">
+                        <input
+                          id="cash_on_delivery"
+                          name="paymentMethod"
+                          type="radio"
+                          value="cash_on_delivery"
+                          checked={paymentMethod === "cash_on_delivery"}
+                          onChange={() => setPaymentMethod("cash_on_delivery")}
+                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                        />
+                        <label htmlFor="cash_on_delivery" className="ml-3 block text-sm font-medium text-gray-700">
+                          Cash on Delivery
+                        </label>
+                        <div className="ml-auto">
+                          <FiTruck className="h-8 w-8 text-gray-500" />
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+                    {/* No payment methods available */}
+                    {!paymentSettings.enableKhalti &&
+                      !paymentSettings.enablePaypal &&
+                      !paymentSettings.enableCashOnDelivery && (
+                        <div className="bg-yellow-100 text-yellow-800 p-4 rounded-md">
+                          No payment methods are currently available. Please contact support.
+                        </div>
+                      )}
 
                     {/* Payment Buttons */}
                     <div className="mt-6">
                       {paymentMethod === "khalti" && (
                         <button
-                          type="button"
-                          onClick={handleKhaltiPayment}
+                          type="submit"
                           className="w-full bg-purple-600 text-white py-3 rounded-md hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || cartTotal < paymentSettings.minimumOrderAmount}
                         >
                           <FiCreditCard size={18} />
                           <span>{isSubmitting ? "Processing..." : "Pay with Khalti"}</span>
@@ -466,7 +551,7 @@ function Checkout() {
                         <div className="mt-4 p-4 bg-gray-50 rounded-md">
                           <PayPalScriptProvider
                             options={{
-                              "client-id": "test",
+                              "client-id": "sb", // Use sandbox client ID
                               currency: "USD",
                               components: "buttons",
                             }}
@@ -475,7 +560,10 @@ function Checkout() {
                               style={{ layout: "horizontal" }}
                               createOrder={createOrder}
                               onApprove={onApprove}
-                              disabled={isSubmitting}
+                              disabled={
+                                isSubmitting || !formValidated || cartTotal < paymentSettings.minimumOrderAmount
+                              }
+                              onClick={() => validateForm()}
                             />
                           </PayPalScriptProvider>
                         </div>
@@ -483,10 +571,9 @@ function Checkout() {
 
                       {paymentMethod === "cash_on_delivery" && (
                         <button
-                          type="button"
-                          onClick={handleCashOnDelivery}
+                          type="submit"
                           className="w-full bg-green-600 text-white py-3 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || cartTotal < paymentSettings.minimumOrderAmount}
                         >
                           <FiDollarSign size={18} />
                           <span>{isSubmitting ? "Processing..." : "Place Order (Cash on Delivery)"}</span>
@@ -538,6 +625,14 @@ function Checkout() {
                   <p className="text-xl font-bold text-indigo-600">${finalTotal.toFixed(2)}</p>
                 </div>
               </div>
+
+              {/* Free shipping threshold message */}
+              {cartTotal < paymentSettings.freeShippingThreshold && (
+                <div className="mt-4 bg-blue-50 text-blue-700 p-3 rounded-md text-sm">
+                  Add ${(paymentSettings.freeShippingThreshold - cartTotal).toFixed(2)} more to qualify for free
+                  shipping!
+                </div>
+              )}
 
               {/* Secure Checkout Message */}
               <div className="mt-6 flex items-center justify-center gap-1 text-sm text-gray-500">

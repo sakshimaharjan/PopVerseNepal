@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { FiTrash2, FiArrowLeft, FiShoppingBag, FiCreditCard } from "react-icons/fi"
@@ -22,7 +20,7 @@ function Cart() {
 
   // Handle coupon application
   const applyCoupon = () => {
-    if (couponCode.toLowerCase() === "marvel10") {
+    if (couponCode.toLowerCase() === "marvel10" || couponCode.toLowerCase() === "popverse2025") {
       setDiscount(cartTotal * 0.1)
       setCouponApplied(true)
     } else {
@@ -33,7 +31,7 @@ function Cart() {
   // Handle checkout
   const handleCheckout = () => {
     if (!currentUser) {
-      navigate("/login?redirect=checkout")
+      navigate("/login?redirect=checkout")``
     } else {
       navigate("/checkout")
     }
@@ -126,7 +124,7 @@ function Cart() {
                             className="text-gray-500 hover:text-red-600 flex items-center gap-1"
                           >
                             <FiTrash2 size={16} />
-                            <span className="text-sm">Remove</span>
+                            <span className="text-sm cursor-pointer">Remove</span>
                           </button>
                         </div>
                       </div>
@@ -146,7 +144,7 @@ function Cart() {
                   className="inline-flex items-center gap-2 text-red-600 hover:text-red-800"
                 >
                   <FiTrash2 size={16} />
-                  <span>Clear Cart</span>
+                  <span className="cursor-pointer">Clear Cart</span>
                 </button>
               </div>
             </div>
@@ -194,7 +192,7 @@ function Cart() {
                     />
                     <button
                       onClick={applyCoupon}
-                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-r-md hover:bg-gray-300 transition-colors"
+                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-r-md hover:bg-gray-300 transition-colors cursor-pointer"
                     >
                       Apply
                     </button>
@@ -209,7 +207,7 @@ function Cart() {
                 className="w-full mt-6 bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
               >
                 <FiCreditCard size={18} />
-                <span>Proceed to Checkout</span>
+                <span className="cursor-pointer">Proceed to Checkout</span>
               </button>
 
               {/* Secure Checkout Message */}

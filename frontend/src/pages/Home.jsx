@@ -135,7 +135,7 @@ function Home() {
             </Link>
             <Link to="/products?category=exclusive" className="relative h-80 group overflow-hidden rounded-lg">
               <img
-                src="/exclusive-collection.jpg"
+                src="/exclusive.png"
                 alt="Exclusive Collection"
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
               />

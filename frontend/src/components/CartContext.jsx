@@ -1,6 +1,7 @@
 "use client"
 
 import { createContext, useState, useEffect, useContext } from "react"
+import { useAuth } from "./AuthContext"
 
 const CartContext = createContext()
 
@@ -15,19 +16,44 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([])
   const [cartTotal, setCartTotal] = useState(0)
+  const { currentUser } = useAuth()
 
-  // Load cart from localStorage on initial render
+  // Load cart from localStorage on initial render and when user changes
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart")
-    if (savedCart) {
-      setCart(JSON.parse(savedCart))
+    const loadCart = () => {
+      if (currentUser) {
+        // If user is logged in, load their specific cart
+        const userCartKey = `cart_${currentUser._id}`
+        const savedCart = localStorage.getItem(userCartKey)
+        if (savedCart) {
+          setCart(JSON.parse(savedCart))
+        } else {
+          // If no cart exists for this user, start with empty cart
+          setCart([])
+        }
+      } else {
+        // For non-logged in users, use a guest cart
+        const guestCart = localStorage.getItem("guest_cart")
+        if (guestCart) {
+          setCart(JSON.parse(guestCart))
+        } else {
+          setCart([])
+        }
+      }
     }
-  }, [])
+
+    loadCart()
+  }, [currentUser]) // Re-run when user changes
 
   // Update localStorage and calculate total whenever cart changes
   useEffect(() => {
     if (cart.length > 0) {
-      localStorage.setItem("cart", JSON.stringify(cart))
+      // Save cart to the appropriate storage key based on user status
+      if (currentUser) {
+        localStorage.setItem(`cart_${currentUser._id}`, JSON.stringify(cart))
+      } else {
+        localStorage.setItem("guest_cart", JSON.stringify(cart))
+      }
 
       // Calculate total
       const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -36,11 +62,16 @@ export const CartProvider = ({ children }) => {
       // Dispatch custom event for components like Navbar to update
       window.dispatchEvent(new Event("cartUpdated"))
     } else {
-      localStorage.removeItem("cart")
+      // If cart is empty, remove the storage item
+      if (currentUser) {
+        localStorage.removeItem(`cart_${currentUser._id}`)
+      } else {
+        localStorage.removeItem("guest_cart")
+      }
       setCartTotal(0)
       window.dispatchEvent(new Event("cartUpdated"))
     }
-  }, [cart])
+  }, [cart, currentUser])
 
   // Add item to cart
   const addToCart = (product, quantity = 1) => {
@@ -80,6 +111,46 @@ export const CartProvider = ({ children }) => {
     setCart([])
   }
 
+  // Transfer guest cart to user cart when logging in
+  const mergeGuestCart = () => {
+    const guestCart = localStorage.getItem("guest_cart")
+    if (guestCart && currentUser) {
+      const parsedGuestCart = JSON.parse(guestCart)
+      if (parsedGuestCart.length > 0) {
+        // Merge with existing user cart if any
+        const userCartKey = `cart_${currentUser._id}`
+        const userCart = localStorage.getItem(userCartKey)
+
+        if (userCart) {
+          const parsedUserCart = JSON.parse(userCart)
+
+          // Combine carts, handling duplicates by adding quantities
+          const mergedCart = [...parsedUserCart]
+
+          parsedGuestCart.forEach((guestItem) => {
+            const existingItemIndex = mergedCart.findIndex((item) => item._id === guestItem._id)
+
+            if (existingItemIndex >= 0) {
+              // Item exists in user cart, add quantities
+              mergedCart[existingItemIndex].quantity += guestItem.quantity
+            } else {
+              // Item doesn't exist in user cart, add it
+              mergedCart.push(guestItem)
+            }
+          })
+
+          setCart(mergedCart)
+        } else {
+          // No existing user cart, just use guest cart
+          setCart(parsedGuestCart)
+        }
+
+        // Clear guest cart after merging
+        localStorage.removeItem("guest_cart")
+      }
+    }
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -89,10 +160,10 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         updateQuantity,
         clearCart,
+        mergeGuestCart,
       }}
     >
       {children}
     </CartContext.Provider>
   )
 }
-
