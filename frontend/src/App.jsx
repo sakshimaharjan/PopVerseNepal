@@ -28,7 +28,7 @@ import HelpSupport from "./pages/HelpSupport"
 import Checkout from "./pages/Checkout"
 import KhaltiScript from "./components/KhaltiScript"
 import TermsConditions from "./pages/TermsConditions"
-import PrivacyPolicy from "./pages/PrivacyPolicy"
+import Policy from "./pages/Policy"
 import FAQ from "./pages/FAQ"
 
 // Layout wrapper to conditionally render Navbar and Footer
@@ -73,6 +73,9 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/helpandsupport" element={<HelpSupport />} />
                 <Route path="/not-authorized" element={<NotAuthorized />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/privacypolicy" element={<Policy />} />
+                <Route path="/terms-and-conditions" element={<TermsConditions />} />
                 <Route
                   path="/dashboard"
                   element={

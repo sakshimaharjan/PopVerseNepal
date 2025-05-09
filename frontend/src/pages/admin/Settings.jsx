@@ -153,7 +153,7 @@ function Settings() {
           <div className="flex border-b overflow-x-auto">
             <button
               onClick={() => setActiveTab("general")}
-              className={`px-4 py-3 font-medium text-sm flex items-center gap-2 ${
+              className={`px-4 py-3 font-medium text-sm flex items-center gap-2 cursor-pointer ${
                 activeTab === "general"
                   ? "border-b-2 border-indigo-600 text-indigo-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -164,9 +164,9 @@ function Settings() {
             </button>
             <button
               onClick={() => setActiveTab("payment")}
-              className={`px-4 py-3 font-medium text-sm flex items-center gap-2 ${
+              className={`px-4 py-3 font-medium text-sm flex items-center gap-2 cursor-pointer ${
                 activeTab === "payment"
-                  ? "border-b-2 border-indigo-600 text-indigo-600"
+                  ? "border-b-2 border-indigo-600 text-indigo-600 "
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -175,7 +175,7 @@ function Settings() {
             </button>
             <button
               onClick={() => setActiveTab("email")}
-              className={`px-4 py-3 font-medium text-sm flex items-center gap-2 ${
+              className={`px-4 py-3 font-medium text-sm flex items-center gap-2 cursor-pointer ${
                 activeTab === "email"
                   ? "border-b-2 border-indigo-600 text-indigo-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -186,7 +186,7 @@ function Settings() {
             </button>
             <button
               onClick={() => setActiveTab("security")}
-              className={`px-4 py-3 font-medium text-sm flex items-center gap-2 ${
+              className={`px-4 py-3 font-medium text-sm flex items-center gap-2 cursor-pointer ${
                 activeTab === "security"
                   ? "border-b-2 border-indigo-600 text-indigo-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -292,7 +292,7 @@ function Settings() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-3 bg-white rounded-md border border-gray-200">
                       <div className="flex items-center">
-                        <img src="/placeholder.svg?height=30&width=80&text=PayPal" alt="PayPal" className="h-8 mr-3" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png" alt="PayPal" className="h-8 mr-3" />
                         <div>
                           <p className="font-medium">PayPal</p>
                           <p className="text-sm text-gray-500">Accept payments via PayPal</p>
@@ -312,7 +312,7 @@ function Settings() {
 
                     <div className="flex items-center justify-between p-3 bg-white rounded-md border border-gray-200">
                       <div className="flex items-center">
-                        <img src="/placeholder.svg?height=30&width=80&text=Khalti" alt="Khalti" className="h-8 mr-3" />
+                        <img src="https://blog.khalti.com/wp-content/uploads/2021/01/khalti-icon.png" alt="Khalti" className="h-8 mr-3" />
                         <div>
                           <p className="font-medium">Khalti</p>
                           <p className="text-sm text-gray-500">Accept payments via Khalti Digital Wallet</p>
