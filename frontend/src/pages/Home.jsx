@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Hero from '../components/Hero.jsx'
+import Hero from '../components/Hero.jsx';
+import Footer from '../components/Footer.jsx';
 
 function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -149,6 +150,7 @@ function Home() {
           </div>
         </div>
       </section>
+      <Footer/>
     </div>
   );
 }

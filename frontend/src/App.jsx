@@ -27,6 +27,9 @@ import UserManagement from "./pages/admin/UserManagement"
 import HelpSupport from "./pages/HelpSupport"
 import Checkout from "./pages/Checkout"
 import KhaltiScript from "./components/KhaltiScript"
+import TermsConditions from "./pages/TermsConditions"
+import PrivacyPolicy from "./pages/PrivacyPolicy"
+import FAQ from "./pages/FAQ"
 
 // Layout wrapper to conditionally render Navbar and Footer
 const AppLayout = ({ children }) => {
