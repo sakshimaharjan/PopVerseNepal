@@ -99,7 +99,7 @@ function OrderManagement() {
 
     try {
       await axios.put(
-        `import.meta.env.VITE_API_URL/api/orders/${orderId}/status`,
+        `${import.meta.env.VITE_API_URL}/api/orders/${orderId}/status`,
         { status },
         {
           headers: {

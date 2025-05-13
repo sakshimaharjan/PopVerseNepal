@@ -70,7 +70,7 @@ function ContactManagement() {
   const updateContactStatus = async (contactId, status) => {
     try {
       await axios.put(
-        `import.meta.env.VITE_API_URL/api/contact/${contactId}/status`,
+        `${import.meta.env.VITE_API_URL}/api/contact/${contactId}/status`,
         { status },
         {
           headers: {

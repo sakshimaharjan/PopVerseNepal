@@ -141,7 +141,7 @@ function UserManagement() {
         const userData = { ...formData }
         if (!userData.password) delete userData.password // Don't send empty password
 
-        await axios.put(`import.meta.env.VITE_API_URL/api/users/${currentUser._id}`, userData, {
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/users/${currentUser._id}`, userData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -151,7 +151,7 @@ function UserManagement() {
         alert("User updated successfully")
       } else {
         // Create new user
-        await axios.post("import.meta.env.VITE_API_URL/api/users", formData, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/users`, formData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -186,7 +186,7 @@ function UserManagement() {
     }
 
     try {
-      await axios.delete(`import.meta.env.VITE_API_URL/api/users/${userId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
