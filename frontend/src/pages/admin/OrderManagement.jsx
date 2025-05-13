@@ -19,7 +19,7 @@ function OrderManagement() {
   const fetchOrders = async () => {
     try {
       setLoading(true)
-      const response = await axios.get("http://localhost:3000/api/orders/admin", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/admin`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -99,7 +99,7 @@ function OrderManagement() {
 
     try {
       await axios.put(
-        `http://localhost:3000/api/orders/${orderId}/status`,
+        `import.meta.env.VITE_API_URL/api/orders/${orderId}/status`,
         { status },
         {
           headers: {

@@ -11,9 +11,9 @@ const app = express()
 // Middleware
 app.use(
   cors({
-    origin: ["*"], 
+    origin: ["http://localhost:5173", "https://d1vwywv1vigygg.cloudfront.net"], 
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["*"],
   })
 )
 

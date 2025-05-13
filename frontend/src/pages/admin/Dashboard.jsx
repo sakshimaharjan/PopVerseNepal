@@ -36,11 +36,11 @@ function Dashboard() {
         setLoading(true)
 
         // Fetch products
-        const productsResponse = await axios.get("http://localhost:3000/api/products")
+        const productsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/products`)
         const products = productsResponse.data
 
         // Fetch orders
-        const ordersResponse = await axios.get("http://localhost:3000/api/orders/admin", {
+        const ordersResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/admin`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -141,7 +141,7 @@ function Dashboard() {
 
     try {
       await axios.put(
-        `http://localhost:3000/api/orders/${orderId}/status`,
+        `import.meta.env.VITE_API_URL/api/orders/${orderId}/status`,
         { status },
         {
           headers: {

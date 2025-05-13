@@ -34,7 +34,7 @@ function Products() {
       try {
         setLoading(true)
         // Request products from the backend API
-        const response = await axios.get("http://localhost:3000/api/products")
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products`)
         // Store the products in the state
         setProducts(response.data)
         setLoading(false)

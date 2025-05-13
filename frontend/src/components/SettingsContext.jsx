@@ -1,5 +1,3 @@
-"use client"
-
 import { createContext, useState, useEffect, useContext } from "react"
 
 const SettingsContext = createContext()
@@ -75,7 +73,7 @@ export const SettingsProvider = ({ children }) => {
   const saveSettings = async () => {
     try {
       // Simulate API call
-      // await axios.post("http://localhost:3000/api/settings", settings, {
+      // await axios.post("import.meta.env.VITE_API_URL/api/settings", settings, {
       //   headers: {
       //     Authorization: `Bearer ${localStorage.getItem("token")}`,
       //   },

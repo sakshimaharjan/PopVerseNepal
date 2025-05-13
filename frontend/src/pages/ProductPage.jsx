@@ -29,7 +29,7 @@ function ProductPage() {
     const fetchProduct = async () => {
       try {
         setLoading(true)
-        const response = await axios.get(`http://localhost:3000/api/products/${id}`)
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
         setProduct(response.data)
         setLoading(false)
       } catch (error) {

@@ -19,7 +19,7 @@ function ContactManagement() {
   const fetchContacts = async () => {
     try {
       setLoading(true)
-      const response = await axios.get("http://localhost:3000/api/contact/admin", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/contact/admin`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -70,7 +70,7 @@ function ContactManagement() {
   const updateContactStatus = async (contactId, status) => {
     try {
       await axios.put(
-        `http://localhost:3000/api/contact/${contactId}/status`,
+        `import.meta.env.VITE_API_URL/api/contact/${contactId}/status`,
         { status },
         {
           headers: {

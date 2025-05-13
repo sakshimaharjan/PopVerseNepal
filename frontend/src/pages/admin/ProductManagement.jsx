@@ -28,7 +28,7 @@ function ProductManagement() {
   const fetchProducts = async () => {
     try {
       setLoading(true)
-      const response = await axios.get("http://localhost:3000/api/products")
+      const response = await axios.get("import.meta.env.VITE_API_URL/api/products")
       setProducts(response.data)
       setLoading(false)
     } catch (error) {
@@ -62,7 +62,7 @@ function ProductManagement() {
       let response
 
       if (editMode) {
-        response = await axios.put(`http://localhost:3000/api/products/${currentProductId}`, formDataToSend, {
+        response = await axios.put(`import.meta.env.VITE_API_URL/api/products/${currentProductId}`, formDataToSend, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -70,7 +70,7 @@ function ProductManagement() {
         })
         alert("Product updated successfully!")
       } else {
-        response = await axios.post("http://localhost:3000/api/products", formDataToSend, {
+        response = await axios.post("import.meta.env.VITE_API_URL/api/products", formDataToSend, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -147,7 +147,7 @@ function ProductManagement() {
     }
 
     try {
-      await axios.delete(`http://localhost:3000/api/products/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

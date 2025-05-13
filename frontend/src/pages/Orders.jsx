@@ -18,7 +18,7 @@ function Orders() {
 
       try {
         setLoading(true)
-        const response = await axios.get("http://localhost:3000/api/orders/user", {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/user`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

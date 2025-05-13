@@ -102,7 +102,7 @@ function Settings() {
       localStorage.setItem("security_settings", JSON.stringify(securitySettings))
 
       // In a real app, you would save settings to the API
-      // await axios.post("http://localhost:3000/api/settings", {
+      // await axios.post("import.meta.env.VITE_API_URL/api/settings", {
       //   general: generalSettings,
       //   payment: paymentSettings,
       //   email: emailSettings,

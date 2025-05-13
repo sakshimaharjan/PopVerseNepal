@@ -146,7 +146,7 @@ function Checkout() {
       }
 
       // Make API call to create order
-      const response = await axios.post("http://localhost:3000/api/orders", orderData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/orders`, orderData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

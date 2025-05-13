@@ -12,11 +12,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // API URL based on environment
-  const API_URL =
-    process.env.NODE_ENV === "production"
-      ? process.env.REACT_APP_API_URL || "https://your-backend-domain.vercel.app/api"
-      : "http://localhost:3000/api"
+  // API URL derived from VITE_API_URL (Vite convention)
+  const API_URL = `${import.meta.env.VITE_API_URL}/api`
 
   useEffect(() => {
     // Check if user is logged in on page load
