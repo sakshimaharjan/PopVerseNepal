@@ -1,5 +1,3 @@
-"use client"
-
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { useAuth } from "../components/AuthContext"

@@ -1,5 +1,4 @@
 import Navbar from "../components/Navbar"
-import Footer from "../components/Footer"
 
 function HelpSupport() {
   return (
@@ -104,7 +103,6 @@ function HelpSupport() {
           </div>
         </div>
       </main>
-
     </div>
   )
 }

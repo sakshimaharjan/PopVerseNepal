@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { FiRefreshCw, FiMail, FiCheck, FiEye, FiX } from "react-icons/fi"
 import AdminLayout from "../../components/AdminLayout"

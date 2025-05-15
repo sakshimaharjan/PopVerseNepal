@@ -1,5 +1,3 @@
-"use client"
-
 import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { useAuth } from "../components/AuthContext"
@@ -41,7 +39,7 @@ function SignUp() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-16 pb-16">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-16 pb-16 mt-10">
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">

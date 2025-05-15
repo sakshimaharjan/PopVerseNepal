@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiSearch } from "react-icons/fi"
 import axios from "axios"
@@ -141,23 +139,28 @@ function ProductManagement() {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  const handleDelete = async (id) => {
+  function handleDelete(id) {
     if (!window.confirm("Are you sure you want to delete this product?")) {
       return
     }
 
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/products/${id}`, {
+    // Show loading state or disable the button here if needed
+
+    axios
+      .delete(`${import.meta.env.VITE_API_URL}/api/products/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      fetchProducts()
-      alert("Product deleted successfully!")
-    } catch (error) {
-      console.error("Error deleting product:", error)
-      alert("Error deleting product. Please try again.")
-    }
+      .then(() => {
+        // Update local state immediately
+        setProducts(products.filter((product) => product._id !== id))
+        alert("Product deleted successfully!")
+      })
+      .catch((error) => {
+        console.error("Delete error details:", error.response || error)
+        alert(`Failed to delete product. ${error.response?.data?.message || error.message}`)
+      })
   }
 
   // Filter products based on search term
@@ -176,7 +179,9 @@ function ProductManagement() {
           {/* Product Form */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4 cursor-pointer">{editMode ? "Edit Product" : "Add New Product"}</h2>
+              <h2 className="text-xl font-semibold mb-4 cursor-pointer">
+                {editMode ? "Edit Product" : "Add New Product"}
+              </h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">Product Name</label>

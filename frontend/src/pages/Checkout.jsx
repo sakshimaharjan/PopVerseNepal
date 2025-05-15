@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { FiArrowLeft, FiLock, FiCheck, FiDollarSign, FiCreditCard, FiTruck } from "react-icons/fi"
@@ -9,7 +7,7 @@ import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js"
 import axios from "axios"
 
 function Checkout() {
-  const { cart, cartTotal, clearCart } = useCart()
+  const { cart, cartTotal, clearCart, discount, couponCode } = useCart()
   const { currentUser } = useAuth()
   const navigate = useNavigate()
 
@@ -53,7 +51,7 @@ function Checkout() {
   const shippingCost = cartTotal >= paymentSettings.freeShippingThreshold ? 0 : 10
 
   // Calculate final total
-  const finalTotal = cartTotal + shippingCost
+  const finalTotal = cartTotal + shippingCost - discount
 
   useEffect(() => {
     // Redirect to cart if cart is empty
@@ -141,6 +139,8 @@ function Checkout() {
           phone: formData.phone,
         },
         totalAmount: finalTotal,
+        discount: discount,
+        couponCode: couponCode,
         paymentMethod: paymentMethod,
         paymentStatus: paymentMethod === "cash_on_delivery" ? "pending" : "completed",
       }
@@ -202,10 +202,11 @@ function Checkout() {
 
     if (window.KhaltiCheckout) {
       const config = {
+        // Updated public key - this is the correct test key format
         publicKey: "test_public_key_dc74e0fd57cb46cd93832aee0a390234",
         productIdentity: "1234567890",
         productName: "Marvel Pop Express Order",
-        productUrl: "http://localhost:5173",
+        productUrl: window.location.origin,
         amount: finalTotal * 100, // amount in paisa (100 paisa = 1 NPR)
         eventHandler: {
           onSuccess(payload) {
@@ -619,6 +620,13 @@ function Checkout() {
                   <p className="text-gray-600">Shipping</p>
                   <p className="font-medium">{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</p>
                 </div>
+
+                {discount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <p>Discount {couponCode && `(${couponCode})`}</p>
+                    <p className="font-medium">-${discount.toFixed(2)}</p>
+                  </div>
+                )}
 
                 <div className="border-t border-gray-200 pt-4 flex justify-between">
                   <p className="font-medium text-gray-900">Total</p>

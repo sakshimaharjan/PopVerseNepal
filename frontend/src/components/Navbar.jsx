@@ -1,5 +1,3 @@
-"use client"
-
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { FiMenu, FiX, FiShoppingCart, FiUser, FiSearch, FiLogOut } from "react-icons/fi"
@@ -37,13 +35,12 @@ function Navbar() {
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? "py-4 bg-white shadow-lg" : "py-6 bg-white"
+        scrolled ? "py-2 bg-white shadow-lg" : "py-3 bg-white"
       }`}
-      style={{ height: "115px" }} // Fixed height for the navbar
     >
       <div className="max-w-7xl mx-auto px-3 flex justify-between items-center">
-        <Link to="/" className="flex items-center ">
-          <img src="../../logo.png" alt="PopVerseNepal Logo" className="h-20 w-auto" />
+        <Link to="/" className="flex items-center">
+          <img src="../../logo.png" alt="PopVerseNepal Logo" className="h-12 md:h-16 w-auto" />
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
@@ -126,12 +123,19 @@ function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          className="md:hidden cursor-pointer hover:text-indigo-600 text-gray-700"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <Link to="/cart" className="text-gray-700 hover:text-indigo-600 transition-colors relative mr-2">
+            <FiShoppingCart size={20} />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+          <button className="cursor-pointer hover:text-indigo-600 text-gray-700" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}

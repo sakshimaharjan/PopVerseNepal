@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
+import { useEffect } from "react"
 import { AuthProvider } from "./components/AuthContext"
 import { CartProvider } from "./components/CartContext"
 import { SettingsProvider } from "./components/SettingsContext"
@@ -35,6 +36,27 @@ import FAQ from "./pages/FAQ"
 const AppLayout = ({ children }) => {
   const location = useLocation()
   const isAdminRoute = location.pathname.startsWith("/admin")
+
+  useEffect(() => {
+    const titles = {
+      "/": "Home | PopVerseNepal",
+      "/products": "Products | PopVerseNepal",
+      "/about": "About Us | PopVerseNepal",
+      "/contact": "Contact | PopVerseNepal",
+      "/faq": "FAQs | PopVerseNepal",
+      "/privacypolicy": "Privacy Policy | PopVerseNepal",
+      "/terms-and-conditions": "Terms & Conditions | PopVerseNepal",
+      "/cart": "Cart | PopVerseNepal",
+      "/checkout": "Checkout | PopVerseNepal",
+      "/login": "Login | PopVerseNepal",
+      "/signup": "Sign Up | PopVerseNepal",
+      "/dashboard": "My Dashboard | PopVerseNepal",
+      "/orders": "My Orders | PopVerseNepal",
+      "/helpandsupport": "Help & Support | PopVerseNepal"
+    }
+    const path = location.pathname
+    document.title = titles[path] || "PopVerseNepal"
+  }, [location.pathname])
 
   return (
     <>

@@ -5,12 +5,11 @@ import { useCart } from "../components/CartContext"
 import { useAuth } from "../components/AuthContext"
 
 function Cart() {
-  const { cart, cartTotal, updateQuantity, removeFromCart, clearCart } = useCart()
+  const { cart, cartTotal, updateQuantity, removeFromCart, clearCart, applyCoupon, discount, couponCode } = useCart()
   const { currentUser } = useAuth()
   const navigate = useNavigate()
-  const [couponCode, setCouponCode] = useState("")
-  const [couponApplied, setCouponApplied] = useState(false)
-  const [discount, setDiscount] = useState(0)
+  const [couponInput, setCouponInput] = useState("")
+  const [couponApplied, setCouponApplied] = useState(!!couponCode)
 
   // Calculate shipping cost
   const shippingCost = cartTotal > 100 ? 0 : 10
@@ -19,9 +18,8 @@ function Cart() {
   const finalTotal = cartTotal + shippingCost - discount
 
   // Handle coupon application
-  const applyCoupon = () => {
-    if (couponCode.toLowerCase() === "marvel10" || couponCode.toLowerCase() === "popverse2025") {
-      setDiscount(cartTotal * 0.1)
+  const handleApplyCoupon = () => {
+    if (applyCoupon(couponInput)) {
       setCouponApplied(true)
     } else {
       alert("Invalid coupon code")
@@ -31,7 +29,7 @@ function Cart() {
   // Handle checkout
   const handleCheckout = () => {
     if (!currentUser) {
-      navigate("/login?redirect=checkout")``
+      navigate("/login?redirect=checkout")
     } else {
       navigate("/checkout")
     }
@@ -167,7 +165,7 @@ function Cart() {
 
                 {couponApplied && (
                   <div className="flex justify-between text-green-600">
-                    <p>Discount</p>
+                    <p>Discount ({couponCode})</p>
                     <p className="font-medium">-${discount.toFixed(2)}</p>
                   </div>
                 )}
@@ -185,13 +183,13 @@ function Cart() {
                   <div className="flex">
                     <input
                       type="text"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value)}
                       className="flex-1 border border-gray-300 rounded-l-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       placeholder="Enter code"
                     />
                     <button
-                      onClick={applyCoupon}
+                      onClick={handleApplyCoupon}
                       className="bg-gray-200 text-gray-700 px-4 py-2 rounded-r-md hover:bg-gray-300 transition-colors cursor-pointer"
                     >
                       Apply

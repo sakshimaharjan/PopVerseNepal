@@ -1,5 +1,4 @@
 import Navbar from "../components/Navbar"
-import Footer from "../components/Footer"
 
 function TermsConditions() {
   return (
@@ -96,7 +95,6 @@ function TermsConditions() {
           </div>
         </div>
       </main>
-
     </div>
   )
 }

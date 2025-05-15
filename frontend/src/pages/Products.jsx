@@ -1,11 +1,8 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { Link } from "react-router-dom"
 import { FiFilter, FiGrid, FiList, FiShoppingCart, FiEye } from "react-icons/fi"
 import { useCart } from "../components/CartContext"
-import Footer from "../components/Footer"
 
 function Products() {
   // State for storing products fetched from the API
@@ -366,7 +363,6 @@ function Products() {
         <FiShoppingCart size={18} />
         <span>Added to cart!</span>
       </div>
-      <Footer/>
     </div>
   )
 }

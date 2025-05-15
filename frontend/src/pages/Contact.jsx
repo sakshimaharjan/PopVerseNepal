@@ -1,11 +1,8 @@
-"use client"
-
 import { useState } from "react"
 import { FaMapMarkerAlt, FaEnvelope, FaPhone } from "react-icons/fa"
 import { FaInstagram, FaFacebook, FaTwitter, FaTiktok } from "react-icons/fa"
 import Navbar from "../components/Navbar"
 import axios from "axios"
-import Footer from "../components/Footer"
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -234,7 +231,6 @@ function Contact() {
           </div>
         </div>
       </main>
-      <Footer/>
     </div>
   )
 }

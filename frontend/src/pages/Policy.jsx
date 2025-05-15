@@ -1,5 +1,3 @@
-import React from 'react';
-
 function Policy() {
   return (
     <div className="min-h-screen flex flex-col">
