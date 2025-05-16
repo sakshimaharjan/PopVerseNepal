@@ -170,7 +170,7 @@ function Dashboard() {
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <button
             onClick={refreshData}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+            className="flex items-center gap-2 cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
           >
             <FiRefreshCw size={16} />
             <span>Refresh Data</span>

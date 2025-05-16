@@ -1,227 +1,170 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { FiTrash2, FiArrowLeft, FiShoppingBag, FiCreditCard } from "react-icons/fi"
+import { Link } from "react-router-dom"
+import { FiTrash2, FiPlus, FiMinus, FiCreditCard } from "react-icons/fi"
 import { useCart } from "../components/CartContext"
-import { useAuth } from "../components/AuthContext"
 
-function Cart() {
-  const { cart, cartTotal, updateQuantity, removeFromCart, clearCart, applyCoupon, discount, couponCode } = useCart()
-  const { currentUser } = useAuth()
-  const navigate = useNavigate()
+const Cart = () => {
+  const { cart, cartTotal, discount, couponCode, updateQuantity, removeFromCart, clearCart, applyCoupon } = useCart()
   const [couponInput, setCouponInput] = useState("")
-  const [couponApplied, setCouponApplied] = useState(!!couponCode)
+  const [couponError, setCouponError] = useState("")
 
-  // Calculate shipping cost
   const shippingCost = cartTotal > 100 ? 0 : 10
+  const total = cartTotal - discount + shippingCost
 
-  // Calculate final total
-  const finalTotal = cartTotal + shippingCost - discount
-
-  // Handle coupon application
   const handleApplyCoupon = () => {
-    if (applyCoupon(couponInput)) {
-      setCouponApplied(true)
-    } else {
-      alert("Invalid coupon code")
+    if (!couponInput.trim()) {
+      setCouponError("Please enter a coupon code")
+      return
     }
-  }
-
-  // Handle checkout
-  const handleCheckout = () => {
-    if (!currentUser) {
-      navigate("/login?redirect=checkout")
+    
+    const success = applyCoupon(couponInput)
+    if (success) {
+      setCouponError("")
     } else {
-      navigate("/checkout")
+      setCouponError("Invalid coupon code. Try MARVEL10 or POPVERSE2025")
     }
-  }
-
-  if (cart.length === 0) {
-    return (
-      <div className="min-h-screen bg-gray-50 pt-24 pb-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-16">
-            <FiShoppingBag className="mx-auto h-16 w-16 text-gray-400" />
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">Your cart is empty</h2>
-            <p className="mt-2 text-gray-500">Looks like you haven't added any products to your cart yet.</p>
-            <div className="mt-6">
-              <Link
-                to="/products"
-                className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition-colors"
-              >
-                <FiArrowLeft size={16} />
-                <span>Continue Shopping</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-12 mt-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Shopping Cart</h1>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <ul className="divide-y divide-gray-200">
-                {cart.map((item) => (
-                  <li key={item._id} className="p-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      {/* Product Image */}
-                      <div className="w-full sm:w-24 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
-                        <img
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
-                          className="w-full h-full object-contain p-2"
-                        />
-                      </div>
-
-                      {/* Product Details */}
-                      <div className="flex-1">
-                        <div className="flex flex-col sm:flex-row sm:justify-between">
-                          <div>
-                            <h3 className="text-lg font-medium text-gray-900">
-                              <Link to={`/product/${item._id}`} className="hover:text-indigo-600">
-                                {item.name}
-                              </Link>
-                            </h3>
-                            <p className="mt-1 text-sm text-gray-500 capitalize">{item.category}</p>
-                          </div>
-                          <p className="text-lg font-medium text-indigo-600 mt-2 sm:mt-0">
-                            ${(item.price * item.quantity).toFixed(2)}
-                          </p>
-                        </div>
-
-                        <div className="flex items-center justify-between mt-4">
-                          {/* Quantity Selector */}
-                          <div className="flex items-center">
-                            <button
-                              onClick={() => updateQuantity(item._id, item.quantity - 1)}
-                              className="w-8 h-8 rounded-l-md border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
-                            >
-                              -
-                            </button>
-                            <div className="w-12 h-8 border-t border-b border-gray-300 flex items-center justify-center">
-                              {item.quantity}
-                            </div>
-                            <button
-                              onClick={() => updateQuantity(item._id, item.quantity + 1)}
-                              className="w-8 h-8 rounded-r-md border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
-                            >
-                              +
-                            </button>
-                          </div>
-
-                          {/* Remove Button */}
-                          <button
-                            onClick={() => removeFromCart(item._id)}
-                            className="text-gray-500 hover:text-red-600 flex items-center gap-1"
-                          >
-                            <FiTrash2 size={16} />
-                            <span className="text-sm cursor-pointer">Remove</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Cart Actions */}
-              <div className="p-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between gap-4">
-                <Link to="/products" className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800">
-                  <FiArrowLeft size={16} />
-                  <span>Continue Shopping</span>
-                </Link>
-                <button
-                  onClick={() => clearCart()}
-                  className="inline-flex items-center gap-2 text-red-600 hover:text-red-800"
-                >
-                  <FiTrash2 size={16} />
-                  <span className="cursor-pointer">Clear Cart</span>
-                </button>
-              </div>
-            </div>
+    <div className="container mx-auto mt-10 px-4">
+      <div className="flex flex-col md:flex-row shadow-md my-10">
+        <div className="w-full md:w-3/4 bg-white px-4 md:px-10 py-10">
+          <div className="flex justify-between border-b pb-8">
+            <h1 className="font-semibold text-2xl">Shopping Cart</h1>
+            <h2 className="font-semibold text-2xl">{cart.length} Items</h2>
+          </div>
+          <div className="flex mt-10 mb-5 md:flex">
+            <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">Product Details</h3>
+            <h3 className="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Quantity</h3>
+            <h3 className="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Price</h3>
+            <h3 className="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Total</h3>
           </div>
 
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
-              <h2 className="text-lg font-medium text-gray-900 mb-6">Order Summary</h2>
-
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <p className="text-gray-600">Subtotal</p>
-                  <p className="font-medium">${cartTotal.toFixed(2)}</p>
-                </div>
-                <div className="flex justify-between">
-                  <p className="text-gray-600">Shipping</p>
-                  <p className="font-medium">{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</p>
-                </div>
-
-                {couponApplied && (
-                  <div className="flex justify-between text-green-600">
-                    <p>Discount ({couponCode})</p>
-                    <p className="font-medium">-${discount.toFixed(2)}</p>
+          {cart.length === 0 ? (
+            <div className="text-center py-10">
+              <p className="text-gray-500">Your cart is empty.</p>
+              <Link to="/products" className="text-indigo-600 hover:text-indigo-800 mt-4 inline-block">
+                Continue Shopping
+              </Link>
+            </div>
+          ) : (
+            cart.map((item) => (
+              <div key={item._id} className="flex flex-col md:flex-row items-center hover:bg-gray-100 -mx-8 px-6 py-5 border-b">
+                <div className="flex w-full md:w-2/5">
+                  <div className="w-20">
+                    <img src={item.image || "/placeholder.svg"} alt={item.name} className="h-24 object-contain" />
                   </div>
-                )}
-
-                <div className="border-t border-gray-200 pt-4 flex justify-between">
-                  <p className="font-medium text-gray-900">Total</p>
-                  <p className="text-xl font-bold text-indigo-600">${finalTotal.toFixed(2)}</p>
-                </div>
-              </div>
-
-              {/* Coupon Code */}
-              {!couponApplied && (
-                <div className="mt-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Coupon Code</label>
-                  <div className="flex">
-                    <input
-                      type="text"
-                      value={couponInput}
-                      onChange={(e) => setCouponInput(e.target.value)}
-                      className="flex-1 border border-gray-300 rounded-l-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      placeholder="Enter code"
-                    />
+                  <div className="flex flex-col justify-between ml-4 flex-grow">
+                    <span className="font-bold text-sm">{item.name}</span>
+                    {item.brand && <span className="text-red-500 text-xs">{item.brand}</span>}
                     <button
-                      onClick={handleApplyCoupon}
-                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-r-md hover:bg-gray-300 transition-colors cursor-pointer"
+                      onClick={() => removeFromCart(item._id)}
+                      className="inline-flex items-center gap-2 text-red-600 hover:text-red-800 cursor-pointer text-xs"
                     >
-                      Apply
+                      <FiTrash2 size={16} />
+                      <span>Remove</span>
                     </button>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Try "MARVEL10" for 10% off</p>
                 </div>
-              )}
+                <div className="flex justify-center w-full md:w-1/5 my-4 md:my-0">
+                  <button
+                    onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                    disabled={item.quantity <= 1}
+                    className="cursor-pointer"
+                  >
+                    <FiMinus size={16} />
+                  </button>
 
-              {/* Checkout Button */}
-              <button
-                onClick={handleCheckout}
-                className="w-full mt-6 bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
-              >
-                <FiCreditCard size={18} />
-                <span className="cursor-pointer">Proceed to Checkout</span>
-              </button>
+                  <input className="mx-2 border text-center w-8" type="text" value={item.quantity} readOnly />
 
-              {/* Secure Checkout Message */}
-              <div className="mt-4 flex items-center justify-center gap-1 text-sm text-gray-500">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-                <span>Secure Checkout</span>
+                  <button 
+                    onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                    className="cursor-pointer"
+                  >
+                    <FiPlus size={16} />
+                  </button>
+                </div>
+                <span className="text-center w-full md:w-1/5 font-semibold text-sm">${item.price.toFixed(2)}</span>
+                <span className="text-center w-full md:w-1/5 font-semibold text-sm">${(item.price * item.quantity).toFixed(2)}</span>
               </div>
-            </div>
+            ))
+          )}
+
+          <Link to="/products" className="flex font-semibold text-indigo-600 text-sm mt-10">
+            <svg className="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512">
+              <path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
+            </svg>
+            Continue Shopping
+          </Link>
+        </div>
+
+        <div id="summary" className="w-full md:w-1/4 px-8 py-10 bg-gray-50">
+          <h1 className="font-semibold text-2xl border-b pb-8">Order Summary</h1>
+          <div className="flex justify-between mt-10 mb-5">
+            <span className="font-semibold text-sm uppercase">Items {cart.length}</span>
+            <span className="font-semibold text-sm">${cartTotal.toFixed(2)}</span>
           </div>
+          <div className="flex justify-between mb-5">
+            <span className="font-semibold text-sm uppercase">Shipping</span>
+            <span className="font-semibold text-sm">
+              {shippingCost === 0 ? "FREE" : `$${shippingCost.toFixed(2)}`}
+            </span>
+          </div>
+          
+          {discount > 0 && (
+            <div className="flex justify-between mb-5 text-green-600">
+              <span className="font-semibold text-sm uppercase">Discount {couponCode && `(${couponCode})`}</span>
+              <span className="font-semibold text-sm">-${discount.toFixed(2)}</span>
+            </div>
+          )}
+          
+          <div className="py-5">
+            <label htmlFor="coupon" className="font-semibold inline-block mb-3 text-sm uppercase">
+              Coupon Code
+            </label>
+            <div className="flex">
+              <input
+                type="text"
+                id="coupon"
+                placeholder="Enter your coupon code"
+                className="p-2 text-sm w-full border"
+                value={couponInput}
+                onChange={(e) => setCouponInput(e.target.value)}
+              />
+              <button
+                onClick={handleApplyCoupon}
+                className="bg-gray-200 text-gray-700 px-4 py-2 hover:bg-gray-300 transition-colors cursor-pointer"
+              >
+                Apply
+              </button>
+            </div>
+            {couponError && <div className="text-red-500 text-xs mt-1">{couponError}</div>}
+            {discount > 0 && <div className="text-green-500 text-xs mt-1">Coupon applied successfully!</div>}
+          </div>
+          
+          <div className="border-t mt-8">
+            <div className="flex font-semibold justify-between py-6 text-sm uppercase">
+              <span>Total cost</span>
+              <span>${total.toFixed(2)}</span>
+            </div>
+            <Link
+              to="/checkout"
+              className="w-full mt-6 bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <FiCreditCard size={18} />
+              <span>Proceed to Checkout</span>
+            </Link>
+          </div>
+          
+          {cart.length > 0 && (
+            <button
+              onClick={clearCart}
+              className="w-full mt-4 text-red-600 hover:text-red-800 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <FiTrash2 size={16} />
+              <span>Clear Cart</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

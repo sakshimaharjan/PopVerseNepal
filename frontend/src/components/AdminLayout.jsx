@@ -163,7 +163,7 @@ function AdminLayout({ children }) {
             <li>
               <button
                 onClick={() => setShowLogoutConfirm(true)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-md text-indigo-100 hover:bg-indigo-700 transition-colors"
+                className="w-full flex items-center gap-3 px-4 cursor-pointer py-3 rounded-md text-indigo-100 hover:bg-indigo-700 transition-colors"
               >
                 <FiLogOut size={18} />
                 <span>Logout</span>

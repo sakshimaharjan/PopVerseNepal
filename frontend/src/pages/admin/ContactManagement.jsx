@@ -97,7 +97,7 @@ function ContactManagement() {
           <h1 className="text-2xl font-bold">Contact Messages</h1>
           <button
             onClick={fetchContacts}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+            className="flex items-center gap-2 cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
           >
             <FiRefreshCw size={16} />
             <span>Refresh</span>
@@ -113,7 +113,7 @@ function ContactManagement() {
           <div className="flex flex-wrap gap-2 mt-3">
             <button
               onClick={() => setFilter("all")}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-3 py-1 rounded-full cursor-pointer text-sm font-medium ${
                 filter === "all" ? "bg-indigo-100 text-indigo-800" : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -121,7 +121,7 @@ function ContactManagement() {
             </button>
             <button
               onClick={() => setFilter("new")}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-3 py-1 rounded-full cursor-pointer text-sm font-medium ${
                 filter === "new" ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -129,7 +129,7 @@ function ContactManagement() {
             </button>
             <button
               onClick={() => setFilter("read")}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-3 py-1 rounded-full cursor-pointer text-sm font-medium ${
                 filter === "read" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -137,7 +137,7 @@ function ContactManagement() {
             </button>
             <button
               onClick={() => setFilter("responded")}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-3 py-1 rounded-full cursor-pointer text-sm font-medium ${
                 filter === "responded" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -207,7 +207,7 @@ function ContactManagement() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={() => viewContactDetails(contact)}
-                          className="text-indigo-600 hover:text-indigo-900"
+                          className="text-indigo-600 hover:text-indigo-900 cursor-pointer"
                         >
                           <FiEye size={18} />
                         </button>
@@ -228,7 +228,7 @@ function ContactManagement() {
             <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">Message Details</h2>
-                <button onClick={() => setShowContactDetails(false)} className="text-gray-500 hover:text-gray-700">
+                <button onClick={() => setShowContactDetails(false)} className="text-gray-500 cursor-pointer hover:text-gray-700">
                   <FiX size={24} />
                 </button>
               </div>
@@ -257,7 +257,7 @@ function ContactManagement() {
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => updateContactStatus(selectedContact._id, "read")}
-                  className="flex items-center gap-1 px-3 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                  className="flex items-center gap-1 px-3 py-2 cursor-pointer bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
                   disabled={selectedContact.status === "read"}
                 >
                   <FiEye size={16} />
@@ -265,7 +265,7 @@ function ContactManagement() {
                 </button>
                 <button
                   onClick={() => updateContactStatus(selectedContact._id, "responded")}
-                  className="flex items-center gap-1 px-3 py-2 bg-green-100 text-green-800 rounded-md hover:bg-green-200"
+                  className="flex items-center gap-1 px-3 py-2 cursor-pointer bg-green-100 text-green-800 rounded-md hover:bg-green-200"
                   disabled={selectedContact.status === "responded"}
                 >
                   <FiCheck size={16} />
@@ -273,7 +273,7 @@ function ContactManagement() {
                 </button>
                 <a
                   href={`mailto:${selectedContact.email}?subject=Re: ${selectedContact.subject}`}
-                  className="flex items-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                  className="flex items-center gap-1 px-3 py-2 cursor-pointer bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                 >
                   <FiMail size={16} />
                   <span>Reply via Email</span>

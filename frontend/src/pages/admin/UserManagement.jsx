@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import {
   FiRefreshCw,
@@ -11,14 +13,64 @@ import {
   FiChevronRight,
   FiFilter,
   FiDownload,
+  FiAlertCircle,
 } from "react-icons/fi"
 import AdminLayout from "../../components/AdminLayout"
-import axios from "axios"
+
+// Mock data for users
+const MOCK_USERS = [
+  {
+    _id: "1",
+    name: "John Doe",
+    email: "john@example.com",
+    role: "admin",
+    isActive: true,
+  },
+  {
+    _id: "2",
+    name: "Jane Smith",
+    email: "jane@example.com",
+    role: "user",
+    isActive: true,
+  },
+  {
+    _id: "3",
+    name: "Bob Johnson",
+    email: "bob@example.com",
+    role: "manager",
+    isActive: false,
+  },
+  {
+    _id: "4",
+    name: "Alice Williams",
+    email: "alice@example.com",
+    role: "user",
+    isActive: true,
+  },
+  {
+    _id: "5",
+    name: "Charlie Brown",
+    email: "charlie@example.com",
+    role: "user",
+    isActive: true,
+  },
+]
 
 function UserManagement() {
-  const [users, setUsers] = useState([])
+  // Load users from localStorage or use mock data
+  const loadInitialUsers = () => {
+    try {
+      const savedUsers = localStorage.getItem("users")
+      return savedUsers ? JSON.parse(savedUsers) : MOCK_USERS
+    } catch (error) {
+      console.error("Error loading users from localStorage:", error)
+      return MOCK_USERS
+    }
+  }
+
+  const [users, setUsers] = useState(loadInitialUsers)
   const [filteredUsers, setFilteredUsers] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddUserModal, setShowAddUserModal] = useState(false)
   const [showEditUserModal, setShowEditUserModal] = useState(false)
@@ -30,6 +82,7 @@ function UserManagement() {
     role: "user",
   })
   const [formErrors, setFormErrors] = useState({})
+  const [error, setError] = useState(null)
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1)
@@ -42,11 +95,11 @@ function UserManagement() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [showFilters, setShowFilters] = useState(false)
 
+  // Save users to localStorage whenever they change
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    localStorage.setItem("users", JSON.stringify(users))
+  }, [users])
 
-  // Apply filters and pagination whenever filters change
   useEffect(() => {
     applyFiltersAndPagination()
   }, [currentPage, roleFilter, statusFilter, searchTerm, users])
@@ -54,16 +107,16 @@ function UserManagement() {
   const fetchUsers = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      setUsers(response.data)
-      setTotalUsers(response.data.length)
+      setError(null)
+
+      // Simulate API call with a delay
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // We're just using the local state since the API is not available
       setLoading(false)
     } catch (error) {
       console.error("Error fetching users:", error)
+      setError("Failed to load users. Using local data instead.")
       setLoading(false)
     }
   }
@@ -113,6 +166,14 @@ function UserManagement() {
       ...prev,
       [name]: value,
     }))
+
+    // Clear error for this field when user starts typing
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({
+        ...prev,
+        [name]: null,
+      }))
+    }
   }
 
   const validateForm = () => {
@@ -132,40 +193,48 @@ function UserManagement() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setError(null)
 
     if (!validateForm()) return
 
     try {
       if (currentUser) {
         // Update existing user
-        const userData = { ...formData }
-        if (!userData.password) delete userData.password // Don't send empty password
+        const userData = {
+          ...currentUser,
+          name: formData.name,
+          email: formData.email,
+          role: formData.role,
+        }
 
-        await axios.put(`${import.meta.env.VITE_API_URL}/api/users/${currentUser._id}`, userData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        // Only update password if provided
+        if (formData.password) {
+          userData.password = formData.password
+        }
 
+        setUsers(users.map((user) => (user._id === currentUser._id ? userData : user)))
         setShowEditUserModal(false)
         alert("User updated successfully")
       } else {
         // Create new user
-        await axios.post(`${import.meta.env.VITE_API_URL}/api/users`, formData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        const newUser = {
+          _id: Date.now().toString(), // Generate a temporary ID
+          name: formData.name,
+          email: formData.email,
+          password: formData.password, // In a real app, this would be hashed
+          role: formData.role,
+          isActive: true,
+        }
 
+        setUsers([...users, newUser])
         setShowAddUserModal(false)
         alert("User created successfully")
       }
 
-      fetchUsers()
       resetForm()
     } catch (error) {
       console.error("Error saving user:", error)
-      alert(error.response?.data?.message || "Error saving user. Please try again.")
+      setError("Error saving user. Please try again.")
     }
   }
 
@@ -186,16 +255,12 @@ function UserManagement() {
     }
 
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      fetchUsers()
+      // Update local state
+      setUsers(users.filter((user) => user._id !== userId))
       alert("User deleted successfully")
     } catch (error) {
       console.error("Error deleting user:", error)
-      alert("Error deleting user. Please try again.")
+      setError("Error deleting user. Please try again.")
     }
   }
 
@@ -226,7 +291,18 @@ function UserManagement() {
 
   const exportUsers = () => {
     // In a real app, you would generate a CSV file
-    alert("This would export all users to a CSV file")
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      "Name,Email,Role,Status\n" +
+      users.map((user) => `${user.name},${user.email},${user.role},${user.isActive ? "Active" : "Inactive"}`).join("\n")
+
+    const encodedUri = encodeURI(csvContent)
+    const link = document.createElement("a")
+    link.setAttribute("href", encodedUri)
+    link.setAttribute("download", "users.csv")
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   // Get user initials for avatar
@@ -288,6 +364,13 @@ function UserManagement() {
             </button>
           </div>
         </div>
+
+        {error && (
+          <div className="mb-6 bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded flex items-center">
+            <FiAlertCircle className="mr-2" />
+            {error}
+          </div>
+        )}
 
         {/* Filters */}
         {showFilters && (

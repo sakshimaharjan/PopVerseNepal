@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FiFilter, FiRefreshCw, FiEye, FiPackage, FiTruck, FiCheck, FiX, FiDownload } from "react-icons/fi"
 import AdminLayout from "../../components/AdminLayout"
+import Invoice from "../../components/Invoice"
 import axios from "axios"
 
 function OrderManagement() {
@@ -9,6 +10,7 @@ function OrderManagement() {
   const [filter, setFilter] = useState("all")
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [showOrderDetails, setShowOrderDetails] = useState(false)
+  const [showInvoice, setShowInvoice] = useState(false)
 
   useEffect(() => {
     fetchOrders()
@@ -89,6 +91,12 @@ function OrderManagement() {
     setShowOrderDetails(true)
   }
 
+  // View invoice
+  const viewInvoice = (order) => {
+    setSelectedOrder(order)
+    setShowInvoice(true)
+  }
+
   // Update order status
   const updateOrderStatus = async (orderId, status) => {
     if (!window.confirm(`Are you sure you want to mark this order as ${status}?`)) {
@@ -121,115 +129,6 @@ function OrderManagement() {
     }
   }
 
-  // Generate invoice (simplified version without jsPDF)
-  const generateInvoice = (order) => {
-    // Create a printable invoice in a new window
-    const invoiceWindow = window.open("", "_blank")
-
-    if (!invoiceWindow) {
-      alert("Please allow popups to generate the invoice")
-      return
-    }
-
-    const invoiceContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Invoice #INV-${order._id.substring(0, 8)}</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-          .invoice-header { text-align: center; margin-bottom: 30px; }
-          .invoice-details { display: flex; justify-content: space-between; margin-bottom: 30px; }
-          .invoice-details div { width: 45%; }
-          table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-          th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
-          th { background-color: #f2f2f2; }
-          .total-row { font-weight: bold; }
-          .footer { text-align: center; margin-top: 50px; font-size: 12px; color: #666; }
-          @media print {
-            .no-print { display: none; }
-            button { display: none; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="invoice-header">
-          <h1>MarvelPopExpress</h1>
-          <h2>INVOICE</h2>
-          <p>Invoice #: INV-${order._id.substring(0, 8)}</p>
-          <p>Date: ${formatDate(order.createdAt)}</p>
-        </div>
-        
-        <div class="invoice-details">
-          <div>
-            <h3>Bill To:</h3>
-            <p>${order.shippingAddress.firstName} ${order.shippingAddress.lastName}<br>
-            ${order.shippingAddress.streetAddress}<br>
-            ${order.shippingAddress.city}, ${order.shippingAddress.postalCode}<br>
-            ${order.shippingAddress.country}</p>
-          </div>
-          <div>
-            <h3>Order Details:</h3>
-            <p>Order #: ${order._id}<br>
-            Payment Method: ${getPaymentMethodName(order.paymentMethod)}<br>
-            Payment Status: ${order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}</p>
-          </div>
-        </div>
-        
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${order.items
-              .map(
-                (item) => `
-              <tr>
-                <td>${item.product?.name || "Product"}</td>
-                <td>$${item.price.toFixed(2)}</td>
-                <td>${item.quantity}</td>
-                <td>$${(item.price * item.quantity).toFixed(2)}</td>
-              </tr>
-            `,
-              )
-              .join("")}
-            <tr>
-              <td colspan="3" style="text-align: right;">Subtotal:</td>
-              <td>$${order.totalAmount.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td colspan="3" style="text-align: right;">Shipping:</td>
-              <td>$0.00</td>
-            </tr>
-            <tr class="total-row">
-              <td colspan="3" style="text-align: right;">Total:</td>
-              <td>$${order.totalAmount.toFixed(2)}</td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <div class="footer">
-          <p>Thank you for your business!</p>
-          <p>MarvelPopExpress - Your premier destination for Marvel collectibles</p>
-        </div>
-        
-        <div class="no-print" style="text-align: center; margin-top: 30px;">
-          <button onclick="window.print();" style="padding: 10px 20px; background: #4338ca; color: white; border: none; border-radius: 4px; cursor: pointer;">Print Invoice</button>
-        </div>
-      </body>
-      </html>
-    `
-
-    invoiceWindow.document.open()
-    invoiceWindow.document.write(invoiceContent)
-    invoiceWindow.document.close()
-  }
-
   return (
     <AdminLayout>
       <div className="p-6">
@@ -237,7 +136,7 @@ function OrderManagement() {
           <h1 className="text-2xl font-bold">Order Management</h1>
           <button
             onClick={fetchOrders}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+            className="flex items-center gap-2 cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
           >
             <FiRefreshCw size={16} />
             <span>Refresh</span>
@@ -250,10 +149,10 @@ function OrderManagement() {
             <FiFilter className="text-gray-500" />
             <span className="text-gray-700 font-medium">Filter by Status:</span>
           </div>
-          <div className="flex flex-wrap gap-2 mt-3">
+          <div className="flex flex-wrap gap-2 mt-3 ">
             <button
               onClick={() => setFilter("all")}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-3 py-1 rounded-full cursor-pointer text-sm font-medium ${
                 filter === "all" ? "bg-indigo-100 text-indigo-800" : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -261,7 +160,7 @@ function OrderManagement() {
             </button>
             <button
               onClick={() => setFilter("processing")}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-3 py-1 rounded-full cursor-pointer text-sm font-medium ${
                 filter === "processing" ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -269,7 +168,7 @@ function OrderManagement() {
             </button>
             <button
               onClick={() => setFilter("shipped")}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-3 py-1 rounded-full cursor-pointer text-sm font-medium ${
                 filter === "shipped" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -277,7 +176,7 @@ function OrderManagement() {
             </button>
             <button
               onClick={() => setFilter("delivered")}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-3 py-1 rounded-full cursor-pointer text-sm font-medium ${
                 filter === "delivered" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -285,7 +184,7 @@ function OrderManagement() {
             </button>
             <button
               onClick={() => setFilter("cancelled")}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-3 py-1 rounded-full cursor-pointer text-sm font-medium ${
                 filter === "cancelled" ? "bg-red-100 text-red-800" : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -376,9 +275,9 @@ function OrderManagement() {
                           </button>
                           {(order.orderStatus === "delivered" || order.orderStatus === "shipped") && (
                             <button
-                              onClick={() => generateInvoice(order)}
+                              onClick={() => viewInvoice(order)}
                               className="text-green-600 hover:text-green-900"
-                              title="Generate Invoice"
+                              title="View Invoice"
                             >
                               <FiDownload size={18} />
                             </button>
@@ -401,7 +300,10 @@ function OrderManagement() {
             <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">Order Details</h2>
-                <button onClick={() => setShowOrderDetails(false)} className="text-gray-500 hover:text-gray-700">
+                <button
+                  onClick={() => setShowOrderDetails(false)}
+                  className="text-gray-500 cursor-pointer hover:text-gray-700"
+                >
                   <FiX size={24} />
                 </button>
               </div>
@@ -518,6 +420,19 @@ function OrderManagement() {
                       </td>
                       <td className="px-4 py-2 text-sm font-medium text-gray-700">$0.00</td>
                     </tr>
+
+                    {/* Display discount if present */}
+                    {selectedOrder.discount > 0 && (
+                      <tr>
+                        <td colSpan="3" className="px-4 py-2 text-sm font-medium text-green-600 text-right">
+                          Discount {selectedOrder.couponCode && `(${selectedOrder.couponCode})`}:
+                        </td>
+                        <td className="px-4 py-2 text-sm font-medium text-green-600">
+                          -${selectedOrder.discount.toFixed(2)}
+                        </td>
+                      </tr>
+                    )}
+
                     <tr>
                       <td colSpan="3" className="px-4 py-2 text-sm font-bold text-gray-900 text-right">
                         Total:
@@ -534,7 +449,7 @@ function OrderManagement() {
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => updateOrderStatus(selectedOrder._id, "processing")}
-                  className="flex items-center gap-1 px-3 py-2 bg-yellow-100 text-yellow-800 rounded-md hover:bg-yellow-200"
+                  className="flex items-center gap-1 px-3 py-2 bg-yellow-100 cursor-pointer text-yellow-800 rounded-md hover:bg-yellow-200"
                   disabled={selectedOrder.orderStatus === "processing"}
                 >
                   <FiPackage size={16} />
@@ -542,7 +457,7 @@ function OrderManagement() {
                 </button>
                 <button
                   onClick={() => updateOrderStatus(selectedOrder._id, "shipped")}
-                  className="flex items-center gap-1 px-3 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                  className="flex items-center gap-1 px-3 py-2 bg-blue-100 cursor-pointer text-blue-800 rounded-md hover:bg-blue-200"
                   disabled={selectedOrder.orderStatus === "shipped"}
                 >
                   <FiTruck size={16} />
@@ -550,7 +465,7 @@ function OrderManagement() {
                 </button>
                 <button
                   onClick={() => updateOrderStatus(selectedOrder._id, "delivered")}
-                  className="flex items-center gap-1 px-3 py-2 bg-green-100 text-green-800 rounded-md hover:bg-green-200"
+                  className="flex items-center gap-1 px-3 py-2 bg-green-100 cursor-pointer text-green-800 rounded-md hover:bg-green-200"
                   disabled={selectedOrder.orderStatus === "delivered"}
                 >
                   <FiCheck size={16} />
@@ -558,13 +473,33 @@ function OrderManagement() {
                 </button>
                 <button
                   onClick={() => updateOrderStatus(selectedOrder._id, "cancelled")}
-                  className="flex items-center gap-1 px-3 py-2 bg-red-100 text-red-800 rounded-md hover:bg-red-200"
+                  className="flex items-center gap-1 px-3 py-2 bg-red-100 cursor-pointer text-red-800 rounded-md hover:bg-red-200"
                   disabled={selectedOrder.orderStatus === "cancelled"}
                 >
                   <FiX size={16} />
                   <span>Cancelled</span>
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Invoice Modal */}
+      {showInvoice && selectedOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h2 className="text-xl font-bold">Invoice</h2>
+              <button
+                onClick={() => setShowInvoice(false)}
+                className="text-gray-500 cursor-pointer hover:text-gray-700"
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+            <div className="p-4">
+              <Invoice order={selectedOrder} onClose={() => setShowInvoice(false)} />
             </div>
           </div>
         </div>
