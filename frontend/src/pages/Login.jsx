@@ -22,6 +22,15 @@ function Login() {
     }
   }, [location])
 
+  // Clear auth error when component mounts or unmounts
+  useEffect(() => {
+    return () => {
+      // This will clear any lingering error when component unmounts
+      setError("")
+    }
+  }, [])
+
+  // Update the handleSubmit function to correctly handle the login flow
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
@@ -29,9 +38,12 @@ function Login() {
 
     try {
       const userData = await login(email, password)
+      console.log("Login successful:", userData)
 
       // Merge guest cart with user cart after successful login
-      mergeGuestCart()
+      if (mergeGuestCart) {
+        mergeGuestCart()
+      }
 
       // Redirect based on user role
       if (userData.role === "admin") {
@@ -43,15 +55,24 @@ function Login() {
         if (redirectTo) {
           navigate(`/${redirectTo}`)
         } else {
-          navigate("/dashboard")
+          navigate("/dashboard") // Make sure this route exists in your App.jsx
         }
       }
     } catch (err) {
-      setError(authError || "Invalid credentials")
+      console.error("Login error:", err)
+      setError(err.message || authError || "Invalid credentials")
     } finally {
       setLoading(false)
     }
   }
+
+  // Add a useEffect to clear error when component unmounts
+  useEffect(() => {
+    return () => {
+      // This will clear any lingering error when component unmounts
+      setError("")
+    }
+  }, [])
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-16 pb-16">
@@ -69,7 +90,7 @@ function Login() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 7 0 00-7-7z"
               />
             </svg>
           </div>
@@ -145,7 +166,7 @@ function Login() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-800 focus:ring-4 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-800 focus:ring-4 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             disabled={loading || !email || !password}
           >
             {loading ? (
