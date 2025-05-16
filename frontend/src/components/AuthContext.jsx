@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from "react"
+import { createContext, useState, useEffect, useContext } from "react"
 import axios from "axios"
 
 const AuthContext = createContext()
@@ -10,91 +10,67 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Check if user is already logged in on initial load
+  // API URL derived from VITE_API_URL (Vite convention)
+  const API_URL = `${import.meta.env.VITE_API_URL}/api`
+
   useEffect(() => {
-    const checkLoggedIn = async () => {
-      try {
-        const token = localStorage.getItem("token")
-
-        if (token) {
-          // Verify token with backend
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-
-          setCurrentUser(response.data)
-        }
-      } catch (err) {
-        // Token is invalid or expired
-        localStorage.removeItem("token")
-        setCurrentUser(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    checkLoggedIn()
-  }, [])
-
-  // Signup function
-  const signup = async (name, email, password) => {
-    try {
-      setError(null)
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
-        name,
-        email,
-        password,
-      })
-
-      return response.data
-    } catch (err) {
-      setError(err.response?.data?.message || "Registration failed")
-      throw err
-    }
-  }
-
-  // Login function
-  const login = async (email, password) => {
-    try {
-      setError(null)
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password })
-
-      // Make sure we're storing the correct data
-      const token = res.data.token
-      const userData = res.data.user || res.data // Handle both response formats
-
-      // Save user data and token
-      localStorage.setItem("token", token)
-      localStorage.setItem("user", JSON.stringify(userData))
+    // Check if user is logged in on page load
+    const token = localStorage.getItem("token")
+    if (token) {
+      const userData = JSON.parse(localStorage.getItem("user"))
+      setCurrentUser(userData)
 
       // Set default auth header for axios
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+    }
+    setLoading(false)
+  }, [])
 
-      setCurrentUser(userData)
-      return userData
+  const login = async (email, password) => {
+    try {
+      setError(null)
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password })
+
+      // Save user data and token
+      localStorage.setItem("token", res.data.token)
+      localStorage.setItem("user", JSON.stringify(res.data))
+
+      // Set default auth header for axios
+      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`
+
+      setCurrentUser(res.data)
+      return res.data
     } catch (err) {
-      console.error("Login error in context:", err)
       setError(err.response?.data?.error || err.response?.data?.message || "Login failed")
       throw err
     }
   }
 
-  // Logout function
+  const signup = async (name, email, password) => {
+    try {
+      setError(null)
+      const res = await axios.post(`${API_URL}/auth/register`, { name, email, password })
+      return res.data
+    } catch (err) {
+      setError(err.response?.data?.error || err.response?.data?.message || "Signup failed")
+      throw err
+    }
+  }
+
   const logout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
+    delete axios.defaults.headers.common["Authorization"]
     setCurrentUser(null)
   }
 
   const value = {
     currentUser,
+    login,
+    signup,
+    logout,
     loading,
     error,
-    signup,
-    login,
-    logout,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
