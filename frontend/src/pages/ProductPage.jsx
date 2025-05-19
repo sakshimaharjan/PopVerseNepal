@@ -1,8 +1,11 @@
+"use client"
+
 import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { FiShoppingCart, FiHeart, FiShare2, FiArrowLeft, FiCheck } from "react-icons/fi"
 import { useCart } from "../components/CartContext"
+import ProductRecommendations from "../components/ProductRecommendations"
 
 function ProductPage() {
   const { id } = useParams()
@@ -101,7 +104,10 @@ function ProductPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex mb-6">
-          <button onClick={goBack} className="inline-flex items-center gap-2 text-gray-500 hover:text-indigo-600 cursor-pointer">
+          <button
+            onClick={goBack}
+            className="inline-flex items-center gap-2 text-gray-500 hover:text-indigo-600 cursor-pointer"
+          >
             <FiArrowLeft size={16} />
             <span>Back to products</span>
           </button>
@@ -253,6 +259,9 @@ function ProductPage() {
         </div>
       </div>
 
+      {/* Recommendations Section */}
+      <ProductRecommendations productId={id} addToCart={addToCart} setShowNotification={setShowNotification} />
+
       {/* Added to Cart Notification */}
       {showNotification && (
         <div className="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-3 rounded-md shadow-lg flex items-center gap-3 z-50 animate-fade-in">
@@ -270,4 +279,3 @@ function ProductPage() {
 }
 
 export default ProductPage
-
