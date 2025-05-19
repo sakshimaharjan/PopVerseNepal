@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import {
@@ -38,7 +40,7 @@ function AdminLayout({ children }) {
     navigate("/")
   }
 
-  // Get user initials for avatar
+  // Get user initials for avatar fallback
   const getUserInitials = () => {
     if (!currentUser || !currentUser.name) return "U"
 
@@ -48,6 +50,14 @@ function AdminLayout({ children }) {
     }
     return nameParts[0][0].toUpperCase()
   }
+
+  // Default profile picture if none exists
+  const defaultProfilePic = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    currentUser?.name || "User",
+  )}&background=6366F1&color=fff`
+
+  // Use profile picture if available, otherwise use default
+  const profilePicture = currentUser?.profilePicture || defaultProfilePic
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
@@ -75,8 +85,16 @@ function AdminLayout({ children }) {
         {currentUser && (
           <div className="px-6 py-4 border-b border-indigo-700">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-medium">
-                {getUserInitials()}
+              <div className="w-10 h-10 rounded-full overflow-hidden">
+                <img
+                  src={profilePicture || "/placeholder.svg"}
+                  alt={currentUser.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.log("Image load error in sidebar, falling back to default")
+                    e.target.src = defaultProfilePic
+                  }}
+                />
               </div>
               <div className="overflow-hidden">
                 <p className="text-white font-medium truncate">{currentUser.name}</p>
@@ -161,6 +179,15 @@ function AdminLayout({ children }) {
               </Link>
             </li>
             <li>
+              <Link
+                to="/"
+                className="flex items-center gap-3 px-4 py-3 rounded-md transition-colors text-indigo-100 hover:bg-indigo-700"
+                onClick={closeSidebar}
+              >
+                <span>← Back to Home</span>
+              </Link>
+            </li>
+            <li>
               <button
                 onClick={() => setShowLogoutConfirm(true)}
                 className="w-full flex items-center gap-3 px-4 cursor-pointer py-3 rounded-md text-indigo-100 hover:bg-indigo-700 transition-colors"
@@ -185,8 +212,16 @@ function AdminLayout({ children }) {
             {currentUser && (
               <>
                 <div className="text-sm text-gray-700 hidden sm:block">{currentUser.name}</div>
-                <div className="h-8 w-8 rounded-full bg-indigo-600 text-white flex items-center justify-center">
-                  {getUserInitials()}
+                <div className="h-8 w-8 rounded-full overflow-hidden">
+                  <img
+                    src={profilePicture || "/placeholder.svg"}
+                    alt={currentUser.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.log("Image load error in header, falling back to default")
+                      e.target.src = defaultProfilePic
+                    }}
+                  />
                 </div>
               </>
             )}

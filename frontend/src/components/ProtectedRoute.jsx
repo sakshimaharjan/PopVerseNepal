@@ -2,10 +2,11 @@ import { Navigate, useLocation } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 import NotAuthorized from "../pages/NotAuthorized"
 
-function ProtectedRoute({ children, adminOnly = false }) {
+const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { currentUser, loading } = useAuth()
   const location = useLocation()
 
+  // While checking auth status, show a loading spinner
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -14,23 +15,22 @@ function ProtectedRoute({ children, adminOnly = false }) {
     )
   }
 
-  // Check if user is authenticated
+  // If user is not logged in, redirect to login with redirect state
   if (!currentUser) {
-    return <Navigate to="/login" state={{ from: location }} />
+    return <Navigate to="/login" replace state={{ from: location }} />
   }
 
-  // Check if route requires admin access
+  // If admin access is required
   if (adminOnly) {
-    // Check if path contains /admin or if adminOnly prop is true
     const isAdminRoute = location.pathname.includes("/admin")
 
-    // If user is not an admin and trying to access admin route
-    if ((isAdminRoute || adminOnly) && currentUser.role !== "admin") {
-      // Instead of redirecting, show the NotAuthorized component
+    if ((adminOnly || isAdminRoute) && currentUser.role !== "admin") {
+      // Show NotAuthorized page instead of redirect
       return <NotAuthorized />
     }
   }
 
+  // If all checks pass, render children
   return children
 }
 

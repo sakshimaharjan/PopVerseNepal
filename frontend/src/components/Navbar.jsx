@@ -1,6 +1,19 @@
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
-import { FiMenu, FiX, FiShoppingCart, FiUser, FiSearch, FiLogOut } from "react-icons/fi"
+import {
+  FiMenu,
+  FiX,
+  FiShoppingCart,
+  FiUser,
+  FiSearch,
+  FiLogOut,
+  FiSettings,
+  FiHome,
+  FiPackage,
+  FiGrid,
+  FiInfo,
+  FiMessageSquare,
+} from "react-icons/fi"
 import { useAuth } from "./AuthContext"
 import { useCart } from "./CartContext"
 
@@ -32,6 +45,23 @@ function Navbar() {
     setShowUserMenu(false)
   }
 
+  // Get user's first name
+  const firstName = currentUser?.name ? currentUser.name.split(" ")[0] : ""
+
+  // Default profile picture if none exists
+  const defaultProfilePic = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName)}&background=6366F1&color=fff`
+
+  // Use profile picture if available, otherwise use default
+  const profilePicture = currentUser?.profilePicture || defaultProfilePic
+
+  // For debugging
+  useEffect(() => {
+    if (currentUser) {
+      console.log("Current user in Navbar:", currentUser)
+      console.log("Profile picture URL:", profilePicture)
+    }
+  }, [currentUser, profilePicture])
+
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
@@ -45,17 +75,27 @@ function Navbar() {
 
         <div className="hidden md:flex items-center gap-8">
           <div className="flex gap-6 text-base font-medium">
-            <Link to="/" className="text-gray-700 hover:text-indigo-600 transition-colors">
-              Home
+            <Link to="/" className="text-gray-700 hover:text-indigo-600 transition-colors flex items-center gap-1">
+              <FiHome size={18} />
+              <span>Home</span>
             </Link>
-            <Link to="/products" className="text-gray-700 hover:text-indigo-600 transition-colors">
-              Products
+            <Link
+              to="/products"
+              className="text-gray-700 hover:text-indigo-600 transition-colors flex items-center gap-1"
+            >
+              <FiGrid size={18} />
+              <span>Products</span>
             </Link>
-            <Link to="/about" className="text-gray-700 hover:text-indigo-600 transition-colors">
-              About
+            <Link to="/about" className="text-gray-700 hover:text-indigo-600 transition-colors flex items-center gap-1">
+              <FiInfo size={18} />
+              <span>About</span>
             </Link>
-            <Link to="/contact" className="text-gray-700 hover:text-indigo-600 transition-colors">
-              Contact
+            <Link
+              to="/contact"
+              className="text-gray-700 hover:text-indigo-600 transition-colors flex items-center gap-1"
+            >
+              <FiMessageSquare size={18} />
+              <span>Contact</span>
             </Link>
           </div>
 
@@ -75,11 +115,19 @@ function Navbar() {
             {currentUser ? (
               <div className="relative">
                 <button
-                  className="flex items-center gap-2 bg-indigo-100 text-indigo-800 px-3 py-1.5 rounded-full hover:bg-indigo-200 transition-colors"
+                  className="flex items-center cursor-pointer gap-2 bg-indigo-100 text-indigo-800 px-3 py-1.5 rounded-full hover:bg-indigo-200 transition-colors"
                   onClick={() => setShowUserMenu(!showUserMenu)}
                 >
-                  <FiUser size={18} />
-                  <span className="text-sm font-medium">{currentUser.name.split(" ")[0]}</span>
+                  <img
+                    src={profilePicture || "/placeholder.svg"}
+                    alt={firstName}
+                    className="w-6 h-6 rounded-full object-cover"
+                    onError={(e) => {
+                      console.log("Image load error, falling back to default")
+                      e.target.src = defaultProfilePic
+                    }}
+                  />
+                  <span className="text-sm font-medium">{firstName}</span>
                 </button>
 
                 {showUserMenu && (
@@ -89,14 +137,30 @@ function Navbar() {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      Dashboard
+                      <div className="flex items-center gap-2">
+                        <FiUser size={16} />
+                        <span>Dashboard</span>
+                      </div>
+                    </Link>
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FiSettings size={16} />
+                        <span>Edit Profile</span>
+                      </div>
                     </Link>
                     <Link
                       to="/orders"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      My Orders
+                      <div className="flex items-center gap-2">
+                        <FiPackage size={16} />
+                        <span>My Orders</span>
+                      </div>
                     </Link>
                     <button
                       onClick={handleLogout}
@@ -144,31 +208,35 @@ function Navbar() {
           <div className="flex flex-col gap-4 px-6">
             <Link
               to="/"
-              className="text-gray-700 font-medium hover:text-indigo-600 py-2 transition-colors"
+              className="text-gray-700 font-medium hover:text-indigo-600 py-2 transition-colors flex items-center gap-2"
               onClick={() => setIsOpen(false)}
             >
-              Home
+              <FiHome size={18} />
+              <span>Home</span>
             </Link>
             <Link
               to="/products"
-              className="text-gray-700 font-medium hover:text-indigo-600 py-2 transition-colors"
+              className="text-gray-700 font-medium hover:text-indigo-600 py-2 transition-colors flex items-center gap-2"
               onClick={() => setIsOpen(false)}
             >
-              Products
+              <FiGrid size={18} />
+              <span>Products</span>
             </Link>
             <Link
               to="/about"
-              className="text-gray-700 font-medium hover:text-indigo-600 py-2 transition-colors"
+              className="text-gray-700 font-medium hover:text-indigo-600 py-2 transition-colors flex items-center gap-2"
               onClick={() => setIsOpen(false)}
             >
-              About
+              <FiInfo size={18} />
+              <span>About</span>
             </Link>
             <Link
               to="/contact"
-              className="text-gray-700 font-medium hover:text-indigo-600 py-2 transition-colors"
+              className="text-gray-700 font-medium hover:text-indigo-600 py-2 transition-colors flex items-center gap-2"
               onClick={() => setIsOpen(false)}
             >
-              Contact
+              <FiMessageSquare size={18} />
+              <span>Contact</span>
             </Link>
           </div>
 
@@ -176,9 +244,15 @@ function Navbar() {
             {currentUser ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 px-2 py-3">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
-                    {currentUser.name.charAt(0).toUpperCase()}
-                  </div>
+                  <img
+                    src={profilePicture || "/placeholder.svg"}
+                    alt={firstName}
+                    className="w-10 h-10 rounded-full object-cover"
+                    onError={(e) => {
+                      console.log("Image load error in mobile menu, falling back to default")
+                      e.target.src = defaultProfilePic
+                    }}
+                  />
                   <div>
                     <p className="font-medium text-gray-800">{currentUser.name}</p>
                     <p className="text-sm text-gray-500">{currentUser.email}</p>
@@ -186,17 +260,27 @@ function Navbar() {
                 </div>
                 <Link
                   to="/dashboard"
-                  className="text-gray-700 hover:text-indigo-600 py-2 transition-colors"
+                  className="text-gray-700 hover:text-indigo-600 py-2 transition-colors flex items-center gap-2"
                   onClick={() => setIsOpen(false)}
                 >
-                  Dashboard
+                  <FiUser size={18} />
+                  <span>Dashboard</span>
+                </Link>
+                <Link
+                  to="/profile"
+                  className="text-gray-700 hover:text-indigo-600 py-2 transition-colors flex items-center gap-2"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <FiSettings size={18} />
+                  <span>Edit Profile</span>
                 </Link>
                 <Link
                   to="/orders"
-                  className="text-gray-700 hover:text-indigo-600 py-2 transition-colors"
+                  className="text-gray-700 hover:text-indigo-600 py-2 transition-colors flex items-center gap-2"
                   onClick={() => setIsOpen(false)}
                 >
-                  My Orders
+                  <FiPackage size={18} />
+                  <span>My Orders</span>
                 </Link>
                 <button
                   onClick={() => {
@@ -205,7 +289,7 @@ function Navbar() {
                   }}
                   className="text-left text-red-600 hover:text-red-700 py-2 transition-colors flex items-center gap-2"
                 >
-                  <FiLogOut size={16} />
+                  <FiLogOut size={18} />
                   <span>Logout</span>
                 </button>
               </div>
@@ -213,10 +297,11 @@ function Navbar() {
               <div className="flex justify-center">
                 <Link
                   to="/login"
-                  className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                  className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-2"
                   onClick={() => setIsOpen(false)}
                 >
-                  Login
+                  <FiUser size={18} />
+                  <span>Login</span>
                 </Link>
               </div>
             )}

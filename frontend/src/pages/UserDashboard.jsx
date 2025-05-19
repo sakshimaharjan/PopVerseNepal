@@ -3,6 +3,7 @@ import { useAuth } from "../components/AuthContext"
 import { useCart } from "../components/CartContext"
 import { Link } from "react-router-dom"
 import { FiShoppingBag, FiHeart, FiAward, FiUser, FiPackage, FiClock, FiTruck, FiCheck } from "react-icons/fi"
+import axios from "axios"
 
 function UserDashboard() {
   const { currentUser, logout } = useAuth()
@@ -23,51 +24,22 @@ function UserDashboard() {
       try {
         setLoading(true)
 
-        // In a real app, this would be an API call
-        // const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/user`, {
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //   },
-        // })
+        // Fetch real orders from the API
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/user`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
 
-        // For now, use mock data
-        const mockOrders = [
-          {
-            _id: "ORD123456",
-            createdAt: "2025-05-10",
-            orderStatus: "delivered",
-            totalAmount: 59.99,
-            items: [
-              { product: { name: "Spider-Man Funko Pop" }, quantity: 1, price: 29.99 },
-              { product: { name: "Iron Man Funko Pop" }, quantity: 1, price: 29.99 },
-            ],
-          },
-          {
-            _id: "ORD789012",
-            createdAt: "2025-05-05",
-            orderStatus: "processing",
-            totalAmount: 29.99,
-            items: [{ product: { name: "Captain America Funko Pop" }, quantity: 1, price: 29.99 }],
-          },
-          {
-            _id: "ORD345678",
-            createdAt: "2025-04-28",
-            orderStatus: "shipped",
-            totalAmount: 49.99,
-            items: [
-              { product: { name: "Thor Funko Pop" }, quantity: 1, price: 24.99 },
-              { product: { name: "Loki Funko Pop" }, quantity: 1, price: 24.99 },
-            ],
-          },
-        ]
+        const userOrders = response.data
 
-        // Calculate stats
-        const totalOrders = mockOrders.length
-        const pendingOrders = mockOrders.filter(
-          (order) => order.orderStatus === "processing" || order.orderStatus === "shipped",
+        // Calculate stats from real data
+        const totalOrders = userOrders.length
+        const pendingOrders = userOrders.filter(
+          (order) => order.orderStatus === "processing" || order.orderStatus === "shipped"
         ).length
-        const completedOrders = mockOrders.filter((order) => order.orderStatus === "delivered").length
-        const totalSpent = mockOrders.reduce((sum, order) => sum + order.totalAmount, 0)
+        const completedOrders = userOrders.filter((order) => order.orderStatus === "delivered").length
+        const totalSpent = userOrders.reduce((sum, order) => sum + order.totalAmount, 0)
 
         setStats({
           totalOrders,
@@ -77,7 +49,7 @@ function UserDashboard() {
         })
 
         // Get recent orders (last 3)
-        setRecentOrders(mockOrders.slice(0, 3))
+        setRecentOrders(userOrders.slice(0, 3))
 
         // Get wishlist count from localStorage
         const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]")
@@ -86,12 +58,24 @@ function UserDashboard() {
         setLoading(false)
       } catch (error) {
         console.error("Error fetching user data:", error)
+        // If there's an error, set empty data
+        setRecentOrders([])
+        setStats({
+          totalOrders: 0,
+          pendingOrders: 0,
+          completedOrders: 0,
+          totalSpent: 0,
+        })
         setLoading(false)
       }
     }
 
-    fetchOrders()
-  }, [])
+    if (currentUser) {
+      fetchOrders()
+    } else {
+      setLoading(false)
+    }
+  }, [currentUser])
 
   const handleLogout = () => {
     logout()
@@ -133,14 +117,30 @@ function UserDashboard() {
     }
   }
 
+  // Default profile picture if none exists
+  const defaultProfilePic = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    currentUser?.name || "User"
+  )}&background=6366F1&color=fff`
+
+  // Use profile picture if available, otherwise use default
+  const profilePicture = currentUser?.profilePicture || defaultProfilePic
+
   return (
     <div className="min-h-screen bg-gray-50 pt-24 px-4 sm:px-6 lg:px-8 mt-10">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
-                <FiUser size={32} />
+              <div className="w-16 h-16 rounded-full overflow-hidden">
+                <img 
+                  src={profilePicture || "/placeholder.svg"} 
+                  alt={currentUser?.name || "User"} 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.log("Image load error, falling back to default")
+                    e.target.src = defaultProfilePic
+                  }}
+                />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-800">Hello, {currentUser?.name || "User"}!</h1>
@@ -220,6 +220,10 @@ function UserDashboard() {
                   <span className="font-medium">Account Type:</span>{" "}
                   {currentUser?.role === "admin" ? "Administrator" : "Customer"}
                 </p>
+                <p className="text-gray-700">
+                  <span className="font-medium">Member Since:</span>{" "}
+                  {currentUser?.createdAt ? formatDate(currentUser.createdAt) : "N/A"}
+                </p>
               </div>
               <div className="mt-4">
                 <Link to="/profile" className="text-indigo-600 hover:text-indigo-800 font-medium">
@@ -263,12 +267,61 @@ function UserDashboard() {
 
             <div className="bg-purple-50 p-6 rounded-lg border border-purple-100">
               <h3 className="text-lg font-semibold text-purple-800 mb-2">Rewards</h3>
-              <p className="text-gray-700 mb-1">Membership Level: Silver</p>
-              <p className="text-gray-700 mb-4">Points: 250</p>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div className="bg-purple-600 h-2.5 rounded-full" style={{ width: "25%" }}></div>
-              </div>
-              <p className="text-xs text-gray-500 mt-1">250/1000 points to Gold level</p>
+              {/* Calculate rewards tier based on total spent */}
+              {(() => {
+                let tier = "Bronze";
+                let points = Math.floor(stats.totalSpent);
+                let nextTier = "Silver";
+                let pointsToNext = 250 - points;
+                let progress = (points / 250) * 100;
+                
+                if (points >= 250 && points < 1000) {
+                  tier = "Silver";
+                  nextTier = "Gold";
+                  pointsToNext = 1000 - points;
+                  progress = ((points - 250) / 750) * 100;
+                } else if (points >= 1000) {
+                  tier = "Gold";
+                  nextTier = "Platinum";
+                  pointsToNext = 2500 - points;
+                  progress = ((points - 1000) / 1500) * 100;
+                  
+                  if (points >= 2500) {
+                    tier = "Platinum";
+                    nextTier = "Diamond";
+                    pointsToNext = 5000 - points;
+                    progress = ((points - 2500) / 2500) * 100;
+                    
+                    if (points >= 5000) {
+                      tier = "Diamond";
+                      nextTier = "Diamond";
+                      pointsToNext = 0;
+                      progress = 100;
+                    }
+                  }
+                }
+                
+                // Cap progress at 100%
+                progress = Math.min(progress, 100);
+                
+                return (
+                  <>
+                    <p className="text-gray-700 mb-1">Membership Level: {tier}</p>
+                    <p className="text-gray-700 mb-4">Points: {points}</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div 
+                        className="bg-purple-600 h-2.5 rounded-full" 
+                        style={{ width: `${progress}%` }}
+                      ></div>
+                    </div>
+                    {tier !== "Diamond" && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        {pointsToNext} points to {nextTier} level
+                      </p>
+                    )}
+                  </>
+                );
+              })()}
               <div className="mt-4">
                 <Link to="/rewards" className="text-purple-600 hover:text-purple-800 font-medium">
                   View Rewards →
@@ -339,7 +392,9 @@ function UserDashboard() {
                           {formatDate(order.createdAt)}
                         </td>
                         <td className="py-4 px-4 text-sm text-gray-500">
-                          {order.items.map((item) => item.product.name).join(", ")}
+                          {order.items.map((item) => 
+                            item.product?.name || "Product"
+                          ).join(", ")}
                         </td>
                         <td className="py-4 px-4 whitespace-nowrap">
                           <span

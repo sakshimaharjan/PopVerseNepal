@@ -29,14 +29,14 @@ const authRoutes = require("./routes/auth")
 const orderRoutes = require("./routes/orders")
 const contactRoutes = require("./routes/contact")
 const recommendationRoutes = require("./routes/recommendationRoutes")
-
-
+const userRoutes = require("./routes/users")
 
 app.use("/api/products", productRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api/orders", orderRoutes)
 app.use("/api/contact", contactRoutes)
 app.use("/api", recommendationRoutes)
+app.use("/api/users", userRoutes)
 
 // Error handling middleware
 app.use(errorHandler)

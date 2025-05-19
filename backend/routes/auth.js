@@ -1,30 +1,30 @@
-const express = require('express');
-const router = express.Router();
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const { protect, admin } = require('../middleware/authMiddleware');
+const express = require("express")
+const router = express.Router()
+const jwt = require("jsonwebtoken")
+const User = require("../models/User")
+const { protect, admin } = require("../middleware/authMiddleware")
 
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d',
-  });
-};
+    expiresIn: "30d",
+  })
+}
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
-router.post('/register', async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role } = req.body
 
     // Check if user exists
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email })
 
     if (userExists) {
-      const error = new Error('User already exists');
-      error.status = 400;
-      throw error;
+      const error = new Error("User already exists")
+      error.status = 400
+      throw error
     }
 
     // Create user
@@ -33,7 +33,7 @@ router.post('/register', async (req, res, next) => {
       email,
       password,
       role,
-    });
+    })
 
     if (user) {
       res.status(201).json({
@@ -42,41 +42,42 @@ router.post('/register', async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        profilePicture: user.profilePicture,
         token: generateToken(user._id),
-      });
+      })
     } else {
-      const error = new Error('Invalid user data');
-      error.status = 400;
-      throw error;
+      const error = new Error("Invalid user data")
+      error.status = 400
+      throw error
     }
   } catch (error) {
-    next(error);
+    next(error)
   }
-});
+})
 
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
 // @access  Public
-router.post('/login', async (req, res, next) => {
+router.post("/login", async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     // Check for user email
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select("+password")
 
     if (!user) {
-      const error = new Error('Invalid credentials');
-      error.status = 401;
-      throw error;
+      const error = new Error("Invalid credentials")
+      error.status = 401
+      throw error
     }
 
     // Check if password matches
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await user.comparePassword(password)
 
     if (!isMatch) {
-      const error = new Error('Invalid credentials');
-      error.status = 401;
-      throw error;
+      const error = new Error("Invalid credentials")
+      error.status = 401
+      throw error
     }
 
     res.json({
@@ -85,19 +86,20 @@ router.post('/login', async (req, res, next) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      profilePicture: user.profilePicture,
       token: generateToken(user._id),
-    });
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-});
+})
 
 // @desc    Get user profile
 // @route   GET /api/auth/profile
 // @access  Private
-router.get('/profile', protect, async (req, res, next) => {
+router.get("/profile", protect, async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id)
 
     if (user) {
       res.json({
@@ -105,16 +107,17 @@ router.get('/profile', protect, async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
-      });
+        profilePicture: user.profilePicture,
+      })
     } else {
-      const error = new Error('User not found');
-      error.status = 404;
-      throw error;
+      const error = new Error("User not found")
+      error.status = 404
+      throw error
     }
   } catch (error) {
-    next(error);
+    next(error)
   }
-});
+})
 
 // Get user count (admin only)
 router.get("/users/count", protect, admin, async (req, res) => {
@@ -128,5 +131,4 @@ router.get("/users/count", protect, admin, async (req, res) => {
   }
 })
 
-
-module.exports = router;
+module.exports = router

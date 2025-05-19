@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { useAuth } from "../components/AuthContext"
 import { useCart } from "../components/CartContext"
+import { FiEye, FiEyeOff, FiMail, FiLock } from "react-icons/fi"
 
 function Login() {
   const [email, setEmail] = useState("")
@@ -9,6 +10,7 @@ function Login() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const { login, error: authError } = useAuth()
@@ -46,7 +48,7 @@ function Login() {
       }
 
       // Redirect based on user role
-      if (userData.role === "admin") {
+      if (userData && userData.role === "admin") {
         navigate("/admin")
       } else {
         // Check if there's a redirect parameter
@@ -60,19 +62,16 @@ function Login() {
       }
     } catch (err) {
       console.error("Login error:", err)
-      setError(err.message || authError || "Invalid credentials")
+      setError(err.response?.data?.message || authError || "Invalid credentials")
     } finally {
       setLoading(false)
     }
   }
 
-  // Add a useEffect to clear error when component unmounts
-  useEffect(() => {
-    return () => {
-      // This will clear any lingering error when component unmounts
-      setError("")
-    }
-  }, [])
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-16 pb-16">
@@ -111,27 +110,16 @@ function Login() {
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
             <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FiMail className="text-gray-400" />
+              </div>
               <input
                 type="email"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-colors"
+                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-colors"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 absolute right-3 top-3.5 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
             </div>
           </div>
 
@@ -139,27 +127,23 @@ function Login() {
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
             <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FiLock className="text-gray-400" />
+              </div>
               <input
-                type="password"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-colors"
+                type={showPassword ? "text" : "password"}
+                className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-colors"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 absolute right-3 top-3.5 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
+                {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+              </button>
             </div>
           </div>
 

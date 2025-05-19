@@ -1,3 +1,5 @@
+"use client"
+
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
 import { useEffect } from "react"
 import { AuthProvider } from "./components/AuthContext"
@@ -14,6 +16,7 @@ import Orders from "./pages/Orders"
 import Login from "./pages/Login"
 import SignUp from "./pages/Signup"
 import UserDashboard from "./pages/UserDashboard"
+import ProfilePage from "./pages/ProfilePage"
 import NotFound from "./pages/NotFound"
 import NotAuthorized from "./pages/NotAuthorized"
 import Contact from "./pages/Contact"
@@ -51,8 +54,9 @@ const AppLayout = ({ children }) => {
       "/login": "Login | PopVerseNepal",
       "/signup": "Sign Up | PopVerseNepal",
       "/dashboard": "My Dashboard | PopVerseNepal",
+      "/profile": "My Profile | PopVerseNepal",
       "/orders": "My Orders | PopVerseNepal",
-      "/helpandsupport": "Help & Support | PopVerseNepal"
+      "/helpandsupport": "Help & Support | PopVerseNepal",
     }
     const path = location.pathname
     document.title = titles[path] || "PopVerseNepal"
@@ -103,6 +107,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <UserDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
                     </ProtectedRoute>
                   }
                 />
