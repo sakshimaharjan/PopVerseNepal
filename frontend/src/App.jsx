@@ -1,7 +1,5 @@
-"use client"
-
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { AuthProvider } from "./components/AuthContext"
 import { CartProvider } from "./components/CartContext"
 import { SettingsProvider } from "./components/SettingsContext"
@@ -40,6 +38,15 @@ const AppLayout = ({ children }) => {
   const location = useLocation()
   const isAdminRoute = location.pathname.startsWith("/admin")
 
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 500) // Adjust duration as needed
+    return () => clearTimeout(timer)
+  }, [])
+
   useEffect(() => {
     const titles = {
       "/": "Home | PopVerseNepal",
@@ -61,6 +68,14 @@ const AppLayout = ({ children }) => {
     const path = location.pathname
     document.title = titles[path] || "PopVerseNepal"
   }, [location.pathname])
+
+  if (loading) {
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+    </div>
+  )
+}
 
   return (
     <>
