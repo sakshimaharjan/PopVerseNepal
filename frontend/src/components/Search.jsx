@@ -211,7 +211,7 @@ function Search() {
                   onKeyDown={handleKeyDown}
                 />
                 {searchQuery ? (
-                  <button onClick={() => setSearchQuery("")} className="mr-2 text-gray-400 hover:text-gray-600 p-2 mr-2">
+                  <button onClick={() => setSearchQuery("")} className="mr-2 text-gray-400 hover:text-gray-600 p-2">
                     <FiX size={20} />
                   </button>
                 ) : null}

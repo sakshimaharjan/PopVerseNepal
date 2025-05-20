@@ -54,22 +54,22 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-4 uppercase">Categories</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/products?category=exclusive" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link to="/products?category=exclusive" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Exclusive Edition
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link to="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Limited Edition
                 </Link>
               </li>
               <li>
-                <Link href="/products?category=marvel" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link to="/products?category=marvel" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Marvel Collection
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
+                <Link to="#" className="text-gray-600 hover:text-indigo-600 transition-colors inline-block">
                   Special Offers
                 </Link>
               </li>
