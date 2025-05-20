@@ -64,7 +64,7 @@ function Home() {
           </div>
 
           {/* Show More Button */}
-          {limitedOffers.length > 3 && (
+          {limitedOffers.length > 4 && (
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
               <button
                 onClick={() => setShowMoreLimited(!showMoreLimited)}
@@ -107,7 +107,7 @@ function Home() {
           </div>
 
           {/* Show More Button */}
-          {featuredProducts.length > 3 && (
+          {featuredProducts.length > 4 && (
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 mt-10">
               <button
                 onClick={() => setShowMoreFeatured(!showMoreFeatured)}

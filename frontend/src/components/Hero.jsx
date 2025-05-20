@@ -1,27 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const Hero = () => (
-  <div className="relative bg-gray-800 lg:h-[800px] h-[800px]">
-    <div className="absolute inset-0 bg-gradient-to-r from-black to-transparent">
-      <div className="container mx-auto px-4 h-full flex flex-col lg:flex-row items-center justify-between">
-        <div className="max-w-2xl text-white mb-8 lg:mb-0 mt-20 px-4 lg:px-8">
-          <h1 className="text-4xl lg:text-5xl font-bold mb-4 mt-14">Heroes Pop, Collect, Marvel On.</h1>
-          <p className="text-lg lg:text-xl mb-12">Explore and collect iconic Marvel heroes in vibrant Funko Pop figures</p>
-          <Link to="/products" className="text-md bg-indigo-600 text-gray-200 p-4 hover:bg-indigo-700 rounded-4xl">
-            Browse Collection
+const Hero = () => {
+  const images = [
+    '../../hero.png',
+    '../../hero-2.png',
+    '../../hero-3.png',
+    '../../hero-4.png',
+    '../../hero-5.png',
+    '../../hero-6.png'
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  return (
+    <section className="relative bg-gradient-to-br from-white to-indigo-50 mt-20 py-24">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        
+        {/* Text Section */}
+        <div className="text-center lg:text-left">
+          <h1 className="text-5xl lg:text-6xl font-extrabold text-indigo-700 leading-tight mb-6">
+            Pop the Legends.<br />Marvel Your Shelf.
+          </h1>
+          <p className="text-lg text-gray-700 mb-8 max-w-xl mx-auto lg:mx-0">
+            Dive into the universe of Marvel Pop Figures – iconic, colorful, and crafted for collectors.
+          </p>
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-full font-medium text-lg shadow-md transition duration-300"
+          >
+            Explore Collection
           </Link>
         </div>
-        <div className="w-md lg:w-auto mt-30 lg:mt-10 px-4 -translate-y-20 lg:-translate-y-0">
-          <img
-            src="../../hero.png"
-            alt="Hero Section Image"
-            className="w-full h-auto lg:h-[500px] object-contain"
-          />
+
+        {/* Image Carousel with Slide Animation */}
+        <div className="relative w-full overflow-hidden max-w-xl mx-auto">
+          <div
+            className="flex transition-transform duration-1000 ease-in-out"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {images.map((src, idx) => (
+              <img
+                key={idx}
+                src={src}
+                alt={`Slide ${idx}`}
+                className="w-full flex-shrink-0 object-contain h-[450px] p-4"
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-);
+    </section>
+  );
+};
 
 export default Hero;
