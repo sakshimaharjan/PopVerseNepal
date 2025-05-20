@@ -52,7 +52,7 @@ function SignUp() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-16 pb-16 mt-10">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-16 pb-16 mt-16">
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
@@ -130,7 +130,7 @@ function SignUp() {
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                className="absolute cursor-pointer inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
               >
                 {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
               </button>
@@ -155,7 +155,7 @@ function SignUp() {
               <button
                 type="button"
                 onClick={toggleConfirmPasswordVisibility}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                className="absolute cursor-pointer inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
               >
                 {showConfirmPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
               </button>
