@@ -1,3 +1,5 @@
+"use client"
+
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import {
@@ -5,7 +7,6 @@ import {
   FiX,
   FiShoppingCart,
   FiUser,
-  FiSearch,
   FiLogOut,
   FiSettings,
   FiHome,
@@ -16,6 +17,7 @@ import {
 } from "react-icons/fi"
 import { useAuth } from "./AuthContext"
 import { useCart } from "./CartContext"
+import Search from "./Search"
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -100,9 +102,7 @@ function Navbar() {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="text-gray-700 hover:text-indigo-600 transition-colors">
-              <FiSearch size={20} />
-            </button>
+            <Search />
             <Link to="/cart" className="text-gray-700 hover:text-indigo-600 transition-colors relative">
               <FiShoppingCart size={20} />
               {cartCount > 0 && (
@@ -187,8 +187,12 @@ function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="flex items-center gap-2 md:hidden">
-          <Link to="/cart" className="text-gray-700 hover:text-indigo-600 transition-colors relative mr-2">
+        <div className="flex items-center gap-3 md:hidden">
+          <Search />
+          <Link
+            to="/cart"
+            className="text-gray-700 hover:text-indigo-600 transition-colors relative p-1.5 rounded-full hover:bg-indigo-50"
+          >
             <FiShoppingCart size={20} />
             {cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -196,7 +200,10 @@ function Navbar() {
               </span>
             )}
           </Link>
-          <button className="cursor-pointer hover:text-indigo-600 text-gray-700" onClick={() => setIsOpen(!isOpen)}>
+          <button
+            className="cursor-pointer hover:text-indigo-600 text-gray-700 p-1.5 rounded-full hover:bg-indigo-50"
+            onClick={() => setIsOpen(!isOpen)}
+          >
             {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
           </button>
         </div>

@@ -1,7 +1,9 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { Link } from "react-router-dom"
-import { FiFilter, FiGrid, FiList, FiShoppingCart, FiEye } from "react-icons/fi"
+import { FiFilter, FiGrid, FiList, FiShoppingCart, FiEye, FiSearch } from "react-icons/fi"
 import { useCart } from "../components/CartContext"
 
 function Products() {
@@ -21,6 +23,9 @@ function Products() {
 
   // State for filter sidebar on mobile
   const [showFilters, setShowFilters] = useState(false)
+
+  // State for search query
+  const [searchQuery, setSearchQuery] = useState("")
 
   // Get cart functions
   const { addToCart } = useCart()
@@ -47,18 +52,48 @@ function Products() {
 
   // Update category state based on URL query parameter
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const categoryParam = params.get("category");
-    if (categoryParam) {
-      setCategory(categoryParam);
-    }
-  }, []);
+    const params = new URLSearchParams(window.location.search)
+    const categoryParam = params.get("category")
+    const searchParam = params.get("search")
 
-  // Filter products based on the selected category
-  let filteredProducts =
-    category === "all"
-      ? products // If "all" is selected, show all products
-      : products.filter((product) => product.category === category) // Filter by selected category
+    if (categoryParam) {
+      setCategory(categoryParam)
+    }
+
+    // If there's a search parameter, we'll use it to filter products
+    if (searchParam) {
+      setSearchQuery(searchParam)
+    }
+  }, [])
+
+  // Add a CSS animation for the search results page to make it more engaging
+  useEffect(() => {
+    // Add animation when search results are shown
+    const resultsContainer = document.getElementById("search-results-container")
+    if (resultsContainer) {
+      resultsContainer.classList.add("animate-fadeIn")
+    }
+  }, [searchQuery])
+
+  // Filter products based on the selected category and search query
+  let filteredProducts = products
+
+  // First filter by category if needed
+  if (category !== "all") {
+    filteredProducts = filteredProducts.filter((product) => product.category === category)
+  }
+
+  // Then filter by search query if present
+  if (searchQuery && searchQuery.trim() !== "") {
+    const query = searchQuery.toLowerCase().trim()
+    filteredProducts = filteredProducts.filter((product) => {
+      const nameMatch = product.name?.toLowerCase().includes(query)
+      const descMatch = product.description?.toLowerCase().includes(query)
+      const categoryMatch = product.category?.toLowerCase().includes(query)
+
+      return nameMatch || descMatch || categoryMatch
+    })
+  }
 
   // Sort the filtered products based on the selected sorting order bubble sort
   const bubbleSort = (arr, ascending = true) => {
@@ -70,7 +105,7 @@ function Products() {
           (ascending && sorted[j].price > sorted[j + 1].price) ||
           (!ascending && sorted[j].price < sorted[j + 1].price)
         ) {
-          [sorted[j], sorted[j + 1]] = [sorted[j + 1], sorted[j]]
+          ;[sorted[j], sorted[j + 1]] = [sorted[j + 1], sorted[j]]
         }
       }
     }
@@ -104,10 +139,24 @@ function Products() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="text-center mb-10">
-          <h1 className=" mt-7 text-4xl font-extrabold text-gray-900 sm:text-5xl">Our Collection</h1>
-          <p className="mt-4 text-xl text-gray-500 max-w-3xl mx-auto">
-            Discover our exclusive collection of Marvel collectibles and more.
-          </p>
+          {searchQuery ? (
+            <>
+              <h1 className="mt-7 text-4xl font-extrabold text-gray-900 sm:text-5xl">Search Results</h1>
+              <div className="mt-4 inline-flex items-center bg-indigo-50 text-indigo-800 px-4 py-2 rounded-full">
+                <FiSearch className="mr-2" size={18} />
+                <p className="text-lg font-medium">"{searchQuery}"</p>
+                <span className="mx-2 text-gray-400">•</span>
+                <span className="text-gray-600">{filteredProducts.length} products found</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <h1 className="mt-7 text-4xl font-extrabold text-gray-900 sm:text-5xl">Our Collection</h1>
+              <p className="mt-4 text-xl text-gray-500 max-w-3xl mx-auto">
+                Discover our exclusive collection of Marvel collectibles and more.
+              </p>
+            </>
+          )}
         </div>
 
         {/* Mobile Filter Button */}
@@ -146,11 +195,11 @@ function Products() {
                             : "text-gray-700 hover:bg-gray-100"
                         }`}
                         onClick={() => {
-                          setCategory(cat);
-                          setShowFilters(false);
-                            setTimeout(() => {
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                            }, 0);
+                          setCategory(cat)
+                          setShowFilters(false)
+                          setTimeout(() => {
+                            window.scrollTo({ top: 0, behavior: "smooth" })
+                          }, 0)
                         }}
                       >
                         {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -194,28 +243,28 @@ function Products() {
             <div className="sticky top-24 bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-lg font-semibold mb-6">Filters</h2>
 
-            {/* Categories */}
-            <div className="mb-8">
-              <h3 className="text-sm font-black text-gray-900 mb-3 ">Categories</h3>
-              <div className="space-y-2 ">
-                {["all", "marvel", "exclusive"].map((cat) => (
-                  <Link
-                    key={cat}
-                    to={`/products?category=${cat}`}
-                    className={`block w-full text-left px-3 py-2 rounded-md cursor-pointer ${
-                      category === cat || window.location.search.includes(`category=${cat}`)
-                        ? "bg-indigo-100 text-indigo-800 font-medium"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                    onClick={() => setCategory(cat)}
-                  >
-                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                  </Link>
-                ))}
+              {/* Categories */}
+              <div className="mb-8">
+                <h3 className="text-sm font-black text-gray-900 mb-3 ">Categories</h3>
+                <div className="space-y-2 ">
+                  {["all", "marvel", "exclusive"].map((cat) => (
+                    <Link
+                      key={cat}
+                      to={`/products?category=${cat}`}
+                      className={`block w-full text-left px-3 py-2 rounded-md cursor-pointer ${
+                        category === cat || window.location.search.includes(`category=${cat}`)
+                          ? "bg-indigo-100 text-indigo-800 font-medium"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                      onClick={() => setCategory(cat)}
+                    >
+                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Sort Options */}
+              {/* Sort Options */}
               <div>
                 <h3 className="text-sm font-medium text-gray-900 mb-3">Sort By</h3>
                 <select
@@ -232,7 +281,7 @@ function Products() {
           </div>
 
           {/* Products Grid */}
-          <div className="flex-1">
+          <div className="flex-1" id="search-results-container">
             {/* View Mode and Results Count */}
             <div className="flex justify-between items-center mb-6">
               <p className="text-sm text-gray-500">Showing {filteredProducts.length} results</p>
@@ -368,4 +417,3 @@ function Products() {
 }
 
 export default Products
-
