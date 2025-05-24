@@ -130,7 +130,7 @@ function Products() {
       toast.classList.remove("hidden")
       setTimeout(() => {
         toast.classList.add("hidden")
-      }, 3000)
+      }, 4000)
     }
   }
 
@@ -288,13 +288,13 @@ function Products() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`p-2 rounded-md ${viewMode === "grid" ? "bg-indigo-100 text-indigo-800" : "text-gray-500"}`}
+                  className={`p-2 rounded-md cursor-pointer ${viewMode === "grid" ? "bg-indigo-100 text-indigo-800" : "text-gray-500"}`}
                 >
                   <FiGrid size={18} />
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`p-2 rounded-md ${viewMode === "list" ? "bg-indigo-100 text-indigo-800" : "text-gray-500"}`}
+                  className={`p-2 rounded-md cursor-pointer ${viewMode === "list" ? "bg-indigo-100 text-indigo-800" : "text-gray-500"}`}
                 >
                   <FiList size={18} />
                 </button>
@@ -334,21 +334,21 @@ function Products() {
                           />
 
                           {/* Quick Action Buttons */}
-                          <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <div className="absolute inset-0 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                             <button
                               onClick={(e) => handleAddToCart(e, product)}
-                              className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-600  hover:text-white transition-colors"
+                              className="p-3 bg-white rounded-full text-indigo-600 hover:bg-indigo-600 cursor-pointer hover:text-white transition-colors"
                               title="Add to cart"
                             >
-                              <FiShoppingCart size={18} />
+                              <FiShoppingCart size={24} />
                             </button>
                             <Link
                               to={`/product/${product._id}`}
-                              className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors "
+                              className="p-3 bg-white rounded-full text-indigo-600 hover:bg-indigo-600 cursor-pointer hover:text-white transition-colors"
                               title="View details"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              <FiEye size={18} />
+                              <FiEye size={24} />
                             </Link>
                           </div>
                         </div>

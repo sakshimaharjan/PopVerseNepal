@@ -41,7 +41,7 @@ function Home() {
             <h2 className="text-3xl font-bold text-indigo-600">Limited Time Offers</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-8 mb-10">
-            {limitedOffers.slice(0, showMoreLimited ? limitedOffers.length : 3).map((product) => (
+            {limitedOffers.slice(0, showMoreLimited ? limitedOffers.length : 4).map((product) => (
               <Link to={`/product/${product._id}`} key={product._id} className="group">
                 <div className="card relative overflow-hidden group">
                   <div className="absolute top-4 right-4 text-white px-3 py-1 rounded-full text-sm">
@@ -84,7 +84,7 @@ function Home() {
             <h2 className="text-3xl font-bold text-indigo-600">Featured Items</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-8 mb-10">
-            {featuredProducts.slice(0, showMoreFeatured ? featuredProducts.length : 3).map((product) => (
+            {featuredProducts.slice(0, showMoreFeatured ? featuredProducts.length : 4).map((product) => (
               <Link to={`/product/${product._id}`} key={product._id} className="group">
                 <div className="card relative overflow-hidden group"> 
                   <div className="absolute top-4 right-4 text-white px-3 py-1 rounded-full text-sm">
