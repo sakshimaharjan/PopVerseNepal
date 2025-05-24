@@ -47,37 +47,32 @@ function Search() {
     setLoading(false)
   }
 
-  // Search algorithm implementation
+  // Search algorithm implementation (basic linear search)
   const performSearch = (query) => {
-    if (!query || query.trim() === "") return []
+    if (!query || query.trim() === "") return [];
 
-    const searchTerms = query.toLowerCase().trim().split(/\s+/)
+    const lowerQuery = query.toLowerCase().trim();
 
-    // Search through products
-    return allProducts
-      .filter((product) => {
-        // Check if product matches any search term
-        return searchTerms.some((term) => {
-          const nameMatch = product.name?.toLowerCase().includes(term)
-          const descMatch = product.description?.toLowerCase().includes(term)
-          const categoryMatch = product.category?.toLowerCase().includes(term)
+    const results = [];
 
-          return nameMatch || descMatch || categoryMatch
-        })
-      })
-      .sort((a, b) => {
-        // Sort by relevance (exact name matches first)
-        const aNameExact = a.name.toLowerCase().includes(query.toLowerCase())
-        const bNameExact = b.name.toLowerCase().includes(query.toLowerCase())
+    for (let product of allProducts) {
+      const name = product.name?.toLowerCase() || "";
+      const description = product.description?.toLowerCase() || "";
+      const category = product.category?.toLowerCase() || "";
 
-        if (aNameExact && !bNameExact) return -1
-        if (!aNameExact && bNameExact) return 1
+      if (
+        name.includes(lowerQuery) ||
+        description.includes(lowerQuery) ||
+        category.includes(lowerQuery)
+      ) {
+        results.push(product);
+      }
 
-        // Then sort by name length (shorter names first as they're more likely to be exact matches)
-        return a.name.length - b.name.length
-      })
-      .slice(0, 5) // Limit to 5 results for better UX
-  }
+      if (results.length >= 5) break;
+    }
+
+    return results;
+  };
 
   // Toggle search input visibility
   const toggleSearch = () => {

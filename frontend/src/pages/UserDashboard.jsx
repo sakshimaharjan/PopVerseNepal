@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../components/AuthContext"
 import { useCart } from "../components/CartContext"
 import { Link } from "react-router-dom"
-import { FiShoppingBag, FiHeart, FiAward, FiUser, FiPackage, FiClock, FiTruck, FiCheck } from "react-icons/fi"
+import { FiShoppingBag, FiHeart, FiAward, FiPackage, FiClock, FiTruck, FiCheck } from "react-icons/fi"
 import axios from "axios"
 
 function UserDashboard() {
