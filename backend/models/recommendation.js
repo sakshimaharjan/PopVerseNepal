@@ -1,54 +1,79 @@
 const Product = require("./Product")
 
-/**
- * Simple Content-Based Recommendation
- * - Compares categorical features directly (exact match)
- * - Compares numerical features with normalized difference
- * - Combines results using fixed weights
- */
 async function getRecommendations(productId) {
   try {
-    // 1. Get the current product
+    //get the current product
     const currentProduct = await Product.findById(productId)
     if (!currentProduct) {
       throw new Error("Product not found")
     }
 
-    // 2. Get all other products
+    //get all other products
     const allProducts = await Product.find({ _id: { $ne: productId } })
     if (allProducts.length === 0) {
       return []
     }
 
-    // 3. Feature weights (adjust if needed)
+    //weights
     const weightCategory = 0.6
     const weightPrice = 0.4
 
-    // 4. Calculate similarity for each product
-    const recommendations = allProducts.map((product) => {
-      // Categorical: category match
-      const categoryMatch = (product.category === currentProduct.category) ? 1 : 0
+    //calculate similarity scores
+    const recommendations = []
 
-      // Numerical: price similarity (normalized)
+    for (let i = 0; i < allProducts.length; i++) {
+      const product = allProducts[i]
+
+      let categoryMatch = 0
+      if (product.category === currentProduct.category) {
+        categoryMatch = 1
+      }
+
+      // compute max price
+      let maxPrice = currentProduct.price
+      if (product.price > maxPrice) {
+        maxPrice = product.price
+      }
+
+      //calculate price similarity [formula: 1 - (diff / maxPrice)]
       let priceSimilarity = 0
-      const maxPrice = Math.max(product.price || 0, currentProduct.price || 0)
       if (maxPrice > 0) {
-        priceSimilarity = 1 - (Math.abs((product.price || 0) - (currentProduct.price || 0)) / maxPrice)
+        const priceDiff = product.price - currentProduct.price
+        const absPriceDiff = priceDiff >= 0 ? priceDiff : -priceDiff
+        priceSimilarity = 1 - (absPriceDiff / maxPrice)
       }
 
-      // Final similarity score
-      const similarityScore = (categoryMatch * weightCategory) + (priceSimilarity * weightPrice)
+      //calculate total similarity score
+      const similarityScore = (weightCategory * categoryMatch) + (weightPrice * priceSimilarity)
 
-      return {
-        ...product.toObject(),
-        similarityScore
+      //store product and score
+      recommendations.push({
+        product: product.toObject(),
+        similarityScore: similarityScore,
+      })
+    }
+
+    //sort recommendations by similarityScore descending using bubble sort
+    for (let i = 0; i < recommendations.length - 1; i++) {
+      for (let j = 0; j < recommendations.length - 1 - i; j++) {
+        if (recommendations[j].similarityScore < recommendations[j + 1].similarityScore) {
+          // Swap
+          const temp = recommendations[j]
+          recommendations[j] = recommendations[j + 1]
+          recommendations[j + 1] = temp
+        }
       }
-    })
+    }
 
-    // 5. Sort and return top 4
-    return recommendations
-      .sort((a, b) => b.similarityScore - a.similarityScore)
-      .slice(0, 4)
+    // 6. Manually select top 4 recommendations
+    const topRecommendations = []
+    const limit = recommendations.length < 4 ? recommendations.length : 4
+    for (let i = 0; i < limit; i++) {
+      topRecommendations.push(recommendations[i])
+    }
+
+    // Return top recommendations array with product and score
+    return topRecommendations
 
   } catch (error) {
     console.error("Error in recommendation model:", error)
