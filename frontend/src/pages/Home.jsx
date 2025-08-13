@@ -68,7 +68,7 @@ function Home() {
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
               <button
                 onClick={() => setShowMoreLimited(!showMoreLimited)}
-                className="text-white bg-indigo-600 px-6 py-3  rounded-lg shadow-lg transform transition-transform hover:scale-90 focus:outline-none hover:bg-primary-dark"
+                className="text-white cursor-pointer bg-indigo-600 px-6 py-3  rounded-lg shadow-lg transform transition-transform hover:scale-90 focus:outline-none hover:bg-primary-dark"
               >
                 {showMoreLimited ? 'Hide' : 'Show More'}
               </button>
@@ -111,7 +111,7 @@ function Home() {
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 mt-10">
               <button
                 onClick={() => setShowMoreFeatured(!showMoreFeatured)}
-                className="text-white bg-indigo-600 px-6 py-3 rounded-lg shadow-lg transform transition-transform hover:scale-110 focus:outline-none hover:bg-primary-dark"
+                className="text-white cursor-pointer bg-indigo-600 px-6 py-3 rounded-lg shadow-lg transform transition-transform hover:scale-110 focus:outline-none hover:bg-primary-dark"
               >
                 {showMoreFeatured ? 'Hide' : 'Show More'}
               </button>

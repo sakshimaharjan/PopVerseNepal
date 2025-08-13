@@ -83,7 +83,7 @@ function Products() {
     filteredProducts = filteredProducts.filter((product) => product.category === category)
   }
 
-  // Then filter by search query if present
+  // filter by search query if present
   if (searchQuery && searchQuery.trim() !== "") {
     const query = searchQuery.toLowerCase().trim()
     filteredProducts = filteredProducts.filter((product) => {
@@ -95,7 +95,7 @@ function Products() {
     })
   }
 
-  // Sort the filtered products based on the selected sorting order bubble sort
+  // Bubble sort
   const bubbleSort = (arr, ascending = true) => {
     const sorted = [...arr]
     const n = sorted.length

@@ -12,7 +12,10 @@ function ProductRecommendations({ productId, addToCart, setShowNotification }) {
     const fetchRecommendations = async () => {
       try {
         setLoading(true)
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/${productId}/recommendations`)
+        // SAME endpoint as before
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/products/${productId}/recommendations`
+        )
         setRecommendations(response.data)
         setLoading(false)
       } catch (error) {
@@ -31,7 +34,7 @@ function ProductRecommendations({ productId, addToCart, setShowNotification }) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
         <div className="bg-white rounded-xl shadow-sm overflow-hidden p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Customers Also Bought</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Products</h2>
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
           </div>
@@ -44,7 +47,7 @@ function ProductRecommendations({ productId, addToCart, setShowNotification }) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
         <div className="bg-white rounded-xl shadow-sm overflow-hidden p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Customers Also Bought</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Products</h2>
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">{error}</div>
         </div>
       </div>
@@ -58,7 +61,7 @@ function ProductRecommendations({ productId, addToCart, setShowNotification }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
       <div className="bg-white rounded-xl shadow-sm overflow-hidden p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Customers Also Bought</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Products</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {recommendations.map((item) => (

@@ -376,7 +376,8 @@ function ProductManagement() {
                               Edit
                             </button>
                             <button
-                              onClick={() => handleDelete(product._id)}
+                              onClick={() => handleDelete
+                                (product._id)}
                               className="text-red-600 hover:text-red-900 cursor-pointer"
                             >
                               Delete
