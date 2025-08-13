@@ -100,7 +100,7 @@ function ProductPage() {
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12 mt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb */}
+
         <nav className="flex mb-6">
           <button
             onClick={goBack}
